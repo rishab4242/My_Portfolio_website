@@ -3,7 +3,7 @@ import { FaPlay } from "react-icons/fa";
 
 function HeroSection() {
   return (
-    <section className="relative w-full h-screen overflow-hidden">
+    <section className="relative w-full h-screen overflow-hidden ">
       {/* Background video */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
         <iframe
@@ -26,24 +26,35 @@ function HeroSection() {
       <div className="absolute inset-0 bg-black/60"></div>
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4">
+      <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4 mt-10">
         {/* Title */}
-        <h1 className="text-white text-4xl md:text-6xl font-bold mb-6 transition-all duration-500 ease-out">
-          Squarespace Developer
-          <span className="hidden sm:inline">
-            <br /> &amp; Coffee Enthusiast
-          </span>
-          .
-        </h1>
+        <div className="text-center px-4">
+          <h1
+            className="text-white text-5xl md:text-7xl lg:text-8xl font-light leading-tight tracking-wide mb-20 transition-all duration-500 ease-out"
+            style={{
+              fontFamily: '"Playfair Display", "Cormorant Garamond", "Times New Roman", serif',
+              fontWeight: "300",
+              letterSpacing: "0.02em",
+              lineHeight: "0.95",
+            }}
+          >
+            Full Stack Developer
+            <br />
+            <span className="text-4xl md:text-6xl lg:text-8xl leading-tight">
+              &amp; Code Enthusiast
+            </span>
+            <span className="text-5xl md:text-7xl lg:text-8xl">.</span>
+          </h1>
+        </div>
 
         {/* Buttons */}
         <div className="flex gap-4 flex-wrap justify-center">
           {/* Hire Button */}
           <a
             href="/squarespace-developer"
-            className="bg-transparent text-white border font-semibold px-6 py-3 rounded-lg shadow-lg hover:bg-gray-200 hover:text-black transition"
+            className="bg-transparent text-white border border-[#e1a87a] font-semibold px-14 py-5 shadow-md hover:bg-gray-200 hover:text-black transition"
           >
-            Hire an Expert
+            HIRE AN EXPERT
           </a>
 
           {/* Watch Video Button with Icon */}
@@ -54,8 +65,8 @@ function HeroSection() {
             className="flex items-center gap-3 bg-transparent text-white font-semibold px-6 py-3 rounded-lg hover:text-gray-300 transition"
           >
             {/* Circular Icon */}
-            <span className="flex items-center justify-center w-8 h-8 rounded-full bg-white text-black ">
-              <FaPlay className="text-xs ml-0.5 " />
+            <span className="flex items-center justify-center w-12 h-12 rounded-full bg-white text-black">
+              <FaPlay className="text-sm ml-0.5" />
             </span>
             Watch Video
           </a>

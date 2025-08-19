@@ -29,10 +29,10 @@ const ExperienceSection = () => {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto p-8 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+    <div className="max-w-7xl mx-auto p-8  min-h-screen" id="experience">
       {/* Section Header */}
       <div className="text-center mb-12">
-        <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+        <h2 className="text-4xl font-bold text-white mb-4">
           Professional Experience
         </h2>
         <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
@@ -41,13 +41,13 @@ const ExperienceSection = () => {
       {/* Experience Card */}
       <div className="relative">
         {/* Timeline Line */}
-        <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-400 to-purple-400 hidden md:block"></div>
+        {/* <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-400 to-purple-400 hidden md:block"></div> */}
 
         {/* Timeline Dot */}
-        <div className="absolute left-6 top-8 w-4 h-4 bg-blue-500 rounded-full border-4 border-white shadow-lg hidden md:block"></div>
+        {/* <div className="absolute left-6 top-8 w-4 h-4 bg-blue-500 rounded-full border-4 border-white shadow-lg hidden md:block"></div> */}
 
         {/* Main Experience Card */}
-        <div className="md:ml-20 bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden border border-slate-200">
+        <div className=" bg-transparent rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden border border-slate-200">
           {/* Card Header */}
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
             <h3 className="text-2xl font-bold mb-2">
@@ -71,10 +71,10 @@ const ExperienceSection = () => {
           <div className="p-8">
             {/* Description */}
             <div className="mb-8">
-              <h4 className="text-lg font-semibold text-slate-800 mb-4">
+              <h4 className="text-lg font-semibold text-slate-300 mb-4">
                 Role Overview
               </h4>
-              <p className="text-slate-600 leading-relaxed">
+              <p className="text-slate-300 leading-relaxed">
                 Worked on front-end development using React.js and Angular,
                 created digital marketing landing pages, contributed to
                 real-time project development, tested and fixed bugs in a
@@ -87,7 +87,7 @@ const ExperienceSection = () => {
 
             {/* Key Skills Used */}
             <div className="mb-8">
-              <h4 className="text-lg font-semibold text-slate-800 mb-4">
+              <h4 className="text-lg font-semibold text-slate-300 mb-4">
                 Technologies & Skills
               </h4>
               <div className="flex flex-wrap gap-3">
@@ -106,7 +106,7 @@ const ExperienceSection = () => {
             </div>
 
             {/* Key Achievements */}
-            <div>
+            {/* <div>
               <h4 className="text-lg font-semibold text-slate-800 mb-4">
                 Key Achievements
               </h4>
@@ -121,11 +121,11 @@ const ExperienceSection = () => {
                   </div>
                 ))}
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Card Footer */}
-          <div className="bg-slate-50 px-8 py-4 border-t border-slate-200">
+          <div className="bg-transparent px-8 py-4 border-t border-slate-200">
             <div className="flex flex-wrap gap-2">
               {[
                 "React.js",
