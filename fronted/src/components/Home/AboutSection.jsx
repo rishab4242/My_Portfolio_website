@@ -4,7 +4,7 @@ export default function AboutSection() {
       {/* Main Heading */}
       <div className="text-center py-10">
         <h2 className="text-5xl font-bold text-white mb-4">About Me</h2>
-        <div className="w-24 h-1 bg-orange-400 mx-auto"></div>
+        <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
       </div>
 
       {/* Section 1 */}

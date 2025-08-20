@@ -51,15 +51,15 @@ function HeroSection() {
         <div className="flex gap-4 flex-wrap justify-center">
           {/* Hire Button */}
           <a
-            href="/squarespace-developer"
+            href="#contact"
             className="bg-transparent text-white border border-[#e1a87a] font-semibold px-14 py-5 shadow-md hover:bg-gray-200 hover:text-black transition"
           >
-            HIRE AN EXPERT
+            GET IN TOUCH
           </a>
 
           {/* Watch Video Button with Icon */}
           <a
-            href="https://vimeo.com/355949646"
+            href="https://www.youtube.com/watch?v=v5Xh1RzV0x8&pp=ygUPI3NodWJoYW13cml0aW5n"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-3 bg-transparent text-white font-semibold px-6 py-3 rounded-lg hover:text-gray-300 transition"

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Mail,
   Phone,
@@ -7,14 +7,305 @@ import {
   Github,
   Linkedin,
   Send,
+  Clock,
+  Calendar,
+  MessageCircle,
+  Coffee,
+  Star,
+  Users,
+  Briefcase,
+  CheckCircle,
 } from "lucide-react";
+
+const CoffeeMeetingBox = () => {
+  const [showForm, setShowForm] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isScheduled, setIsScheduled] = useState(false);
+  const [meetingData, setMeetingData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    date: "",
+    time: "",
+    location: "cafe",
+    message: "",
+  });
+
+  const handleInputChange = (e) => {
+    setMeetingData({
+      ...meetingData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const emailContent = {
+        to: "rishabdakhale17@gmail.com", // Your email
+        subject: `New Coffee Meeting Request - ${meetingData.name}`,
+        body: `
+        New Coffee Meeting Request:
+        
+        Name: ${meetingData.name}
+        Email: ${meetingData.email} // User's email
+        Phone: ${meetingData.phone}
+        Preferred Date: ${meetingData.date}
+        Preferred Time: ${meetingData.time}
+        Location Preference: ${
+          meetingData.location === "cafe"
+            ? "Coffee Shop"
+            : meetingData.location === "office"
+            ? "Office/Co-working Space"
+            : "Other"
+        }
+        Message: ${meetingData.message}
+        
+        Please confirm the meeting details.
+      `,
+        userEmail: meetingData.email, // Send user's email to backend
+      };
+
+      const response = await fetch("http://localhost:5000/api/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(emailContent),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to send email");
+      }
+
+      setIsSubmitting(false);
+      setIsScheduled(true);
+      setMeetingData({
+        name: "",
+        email: "",
+        phone: "",
+        date: "",
+        time: "",
+        location: "cafe",
+        message: "",
+      });
+
+      setTimeout(() => {
+        setIsScheduled(false);
+        setShowForm(false);
+      }, 5000);
+    } catch (error) {
+      console.error("Error scheduling meeting:", error);
+      setIsSubmitting(false);
+    }
+  };
+
+  const timeSlots = [
+    "9:00 AM",
+    "10:00 AM",
+    "11:00 AM",
+    "12:00 PM",
+    "2:00 PM",
+    "3:00 PM",
+    "4:00 PM",
+    "5:00 PM",
+  ];
+
+  const locations = [
+    { value: "cafe", label: "Coffee Shop" },
+    { value: "office", label: "Office/Co-working" },
+    { value: "other", label: "Other" },
+  ];
+
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const minDate = tomorrow.toISOString().split("T")[0];
+
+  if (isScheduled) {
+    return (
+      <div className="bg-gradient-to-br from-green-900/20 to-blue-900/20 backdrop-blur-sm rounded-2xl p-6 border border-green-800/30 h-80 flex flex-col justify-center items-center text-center">
+        <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
+          <CheckCircle className="w-8 h-8 text-green-500" />
+        </div>
+        <h3 className="text-xl font-semibold text-green-400 mb-2">
+          Meeting Scheduled!
+        </h3>
+        <p className="text-gray-400 text-sm mb-4">
+          I've received your meeting request and will confirm the details via
+          email shortly.
+        </p>
+        <p className="text-green-300 text-xs">
+          Check your email for confirmation ✨
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-gradient-to-br from-orange-900/20 to-yellow-900/20 backdrop-blur-sm rounded-2xl p-6 border border-orange-800/30 h-80 flex flex-col">
+      {!showForm ? (
+        <div className="flex flex-col justify-center items-center h-full text-center">
+          <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-yellow-600 rounded-full flex items-center justify-center mb-4">
+            <Coffee className="w-8 h-8 text-white" />
+          </div>
+          <h3 className="text-xl font-semibold mb-2">
+            Schedule a Coffee Meeting
+          </h3>
+          <p className="text-gray-400 text-sm mb-4">
+            Let's discuss your project over a cup of coffee!
+          </p>
+          <button
+            onClick={() => setShowForm(true)}
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-600 to-yellow-600 hover:from-orange-500 hover:to-yellow-500 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 text-sm"
+          >
+            <Calendar className="w-4 h-4" />
+            Book Now
+          </button>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="flex flex-col h-full">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold flex items-center gap-2">
+              <Coffee className="w-5 h-5 text-orange-500" />
+              Schedule Coffee Meeting
+            </h3>
+            <button
+              type="button"
+              onClick={() => setShowForm(false)}
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              ✕
+            </button>
+          </div>
+          <div className="flex-1 overflow-y-auto space-y-3 pr-2">
+            <div className="grid grid-cols-2 gap-2">
+              <input
+                type="text"
+                name="name"
+                placeholder="Your Name"
+                value={meetingData.name}
+                onChange={handleInputChange}
+                required
+                className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white placeholder-gray-400 focus:outline-none focus:border-orange-500 transition-colors text-xs"
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Your Email"
+                value={meetingData.email}
+                onChange={handleInputChange}
+                required
+                className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white placeholder-gray-400 focus:outline-none focus:border-orange-500 transition-colors text-xs"
+              />
+            </div>
+            <input
+              type="tel"
+              name="phone"
+              placeholder="Phone Number"
+              value={meetingData.phone}
+              onChange={handleInputChange}
+              required
+              className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white placeholder-gray-400 focus:outline-none focus:border-orange-500 transition-colors text-xs"
+            />
+            <div className="grid grid-cols-2 gap-2">
+              <input
+                type="date"
+                name="date"
+                value={meetingData.date}
+                onChange={handleInputChange}
+                min={minDate}
+                required
+                className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white focus:outline-none focus:border-orange-500 transition-colors text-xs"
+              />
+              <select
+                name="time"
+                value={meetingData.time}
+                onChange={handleInputChange}
+                required
+                className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white focus:outline-none focus:border-orange-500 transition-colors text-xs"
+              >
+                <option value="" disabled>
+                  Select Time
+                </option>
+                {timeSlots.map((slot, index) => (
+                  <option key={index} value={slot}>
+                    {slot}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <select
+              name="location"
+              value={meetingData.location}
+              onChange={handleInputChange}
+              required
+              className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white focus:outline-none focus:border-orange-500 transition-colors text-xs"
+            >
+              {locations.map((loc, index) => (
+                <option key={index} value={loc.value}>
+                  {loc.label}
+                </option>
+              ))}
+            </select>
+            <textarea
+              name="message"
+              placeholder="Your Message"
+              value={meetingData.message}
+              onChange={handleInputChange}
+              rows="3"
+              className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white placeholder-gray-400 focus:outline-none focus:border-orange-500 transition-colors text-xs resize-none"
+            ></textarea>
+          </div>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className={`mt-4 inline-flex items-center gap-2 justify-center bg-gradient-to-r from-orange-600 to-yellow-600 hover:from-orange-500 hover:to-yellow-500 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 text-sm ${
+              isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            {isSubmitting ? (
+              <>
+                <svg
+                  className="animate-spin w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                Scheduling...
+              </>
+            ) : (
+              <>
+                <Send className="w-4 h-4" />
+                Schedule Meeting
+              </>
+            )}
+          </button>
+        </form>
+      )}
+    </div>
+  );
+};
 
 const ContactSection = () => {
   const handleResumeDownload = () => {
-    // Replace with your actual resume file path
     const link = document.createElement("a");
-    link.href = "/resume.pdf"; // Update this path
-    link.download = "Your_Name_Resume.pdf";
+    link.href = "/Full Stack Resume.pdf";
+    link.download = "Full Stack Resume.pdf";
     link.click();
   };
 
@@ -22,14 +313,14 @@ const ContactSection = () => {
     {
       icon: <Mail className="w-6 h-6" />,
       label: "Email",
-      value: "your.email@gmail.com",
-      link: "mailto:your.email@gmail.com",
+      value: "rishabdakhale17@gmail.com",
+      link: "mailto:rishabdakhale17@gmail.com",
     },
     {
       icon: <Phone className="w-6 h-6" />,
       label: "Phone",
-      value: "+91 12345 67890",
-      link: "tel:+911234567890",
+      value: "+91 7666938815",
+      link: "tel:+917666938815",
     },
     {
       icon: <MapPin className="w-6 h-6" />,
@@ -43,13 +334,13 @@ const ContactSection = () => {
     {
       icon: <Github className="w-6 h-6" />,
       label: "GitHub",
-      url: "https://github.com/yourusername",
+      url: "https://github.com/rishab4242/",
       color: "hover:text-gray-300",
     },
     {
       icon: <Linkedin className="w-6 h-6" />,
       label: "LinkedIn",
-      url: "https://linkedin.com/in/yourprofile",
+      url: "https://www.linkedin.com/in/rishab-dakhale-782346344/",
       color: "hover:text-blue-400",
     },
     {
@@ -59,7 +350,7 @@ const ContactSection = () => {
         </svg>
       ),
       label: "Instagram",
-      url: "https://instagram.com/yourusername",
+      url: "https://www.instagram.com/rishabdakhale2002/",
       color: "hover:text-pink-400",
     },
     {
@@ -69,23 +360,43 @@ const ContactSection = () => {
         </svg>
       ),
       label: "Facebook",
-      url: "https://facebook.com/yourusername",
+      url: "https://www.facebook.com/rishab.dakhale.9",
       color: "hover:text-blue-500",
     },
     {
       icon: (
         <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.570-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488" />
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.570-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488" />
         </svg>
       ),
       label: "WhatsApp",
-      url: "https://wa.me/911234567890",
+      url: "https://wa.me/917666938815",
       color: "hover:text-green-400",
     },
   ];
 
+  const stats = [
+    {
+      icon: <Briefcase className="w-6 h-6" />,
+      label: "Projects",
+      value: "15+",
+    },
+    { icon: <Users className="w-6 h-6" />, label: "Clients", value: "8+" },
+    {
+      icon: <Star className="w-6 h-6" />,
+      label: "Experience",
+      value: "2+ Years",
+    },
+  ];
+
+  const availability = [
+    { day: "Monday - Friday", time: "9:00 AM - 6:00 PM" },
+    { day: "Saturday", time: "10:00 AM - 4:00 PM" },
+    { day: "Sunday", time: "Emergency Only" },
+  ];
+
   return (
-    <section className="bg-black text-white py-10" id="contact">
+    <section className="bg-black text-white py-10 scroll-mt-20" id="contact">
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center mb-16">
@@ -192,28 +503,8 @@ const ContactSection = () => {
             </div>
           </div>
 
-          {/* Email Conversation */}
-          <div className="bg-gradient-to-br from-blue-900/20 to-purple-900/20 backdrop-blur-sm rounded-2xl p-6 border border-blue-800/30 hover:border-blue-700/50 transition-all duration-300 h-80 flex flex-col justify-center">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 hover:from-blue-400 hover:to-purple-500 transition-all duration-300 hover:scale-110">
-                <Mail className="w-8 h-8 text-white" />
-              </div>
-
-              <h3 className="text-xl font-semibold mb-3">Let's Talk</h3>
-              <p className="text-gray-400 mb-6 leading-relaxed text-sm">
-                Ready to work together? Let's discuss your project and turn your
-                vision into reality.
-              </p>
-
-              <a
-                href="mailto:your.email@gmail.com"
-                className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 hover:transform hover:scale-105 hover:shadow-lg hover:shadow-blue-500/25"
-              >
-                <Mail className="w-5 h-5" />
-                Start Conversation
-              </a>
-            </div>
-          </div>
+          {/* Coffee Meeting Scheduler */}
+          <CoffeeMeetingBox />
         </div>
       </div>
 

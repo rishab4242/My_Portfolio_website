@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { Globe, Code2, Database, Users, Star, Sparkles } from "lucide-react";
+import {
+  Globe,
+  Code2,
+  Database,
+  Users,
+  Star,
+  Sparkles,
+  Zap,
+} from "lucide-react";
 
 const SkillsSection = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+  const [hoveredSkill, setHoveredSkill] = useState(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 300);
@@ -14,7 +23,7 @@ const SkillsSection = () => {
     {
       category: "Frontend",
       icon: <Globe className="w-5 h-5" />,
-      gradient: "from-blue-500 to-cyan-500",
+      gradient: "from-blue-500 via-cyan-500 to-blue-600",
       skills: [
         { name: "HTML", icon: "🏗️" },
         { name: "CSS", icon: "🎨" },
@@ -28,7 +37,7 @@ const SkillsSection = () => {
     {
       category: "Backend",
       icon: <Code2 className="w-5 h-5" />,
-      gradient: "from-green-500 to-emerald-500",
+      gradient: "from-green-500 via-emerald-500 to-green-600",
       skills: [
         { name: "Node.js", icon: "🟢" },
         { name: "Express.js", icon: "🚀" },
@@ -37,7 +46,7 @@ const SkillsSection = () => {
     {
       category: "Database & Tools",
       icon: <Database className="w-5 h-5" />,
-      gradient: "from-orange-500 to-red-500",
+      gradient: "from-orange-500 via-red-500 to-orange-600",
       skills: [
         { name: "MongoDB", icon: "🍃" },
         { name: "MySQL", icon: "🐬" },
@@ -49,7 +58,7 @@ const SkillsSection = () => {
     {
       category: "Soft Skills",
       icon: <Users className="w-5 h-5" />,
-      gradient: "from-purple-500 to-pink-500",
+      gradient: "from-purple-500 via-pink-500 to-purple-600",
       skills: [
         { name: "Problem Solving", icon: "🧩" },
         { name: "Teamwork", icon: "🤝" },
@@ -59,96 +68,129 @@ const SkillsSection = () => {
     },
   ];
 
-  const SkillCard = ({ skill, index }) => (
+  const SkillCard = ({ skill, index, categoryGradient }) => (
     <div
-      className={`group bg-transparent rounded-xl p-5 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 cursor-pointer border border-gray-100 ${
-        isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+      className={`group relative bg-gray-900/60 backdrop-blur-sm rounded-xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 cursor-pointer border border-gray-700/50 hover:border-gray-600/70 overflow-hidden ${
+        isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
       }`}
-      style={{ transitionDelay: `${index * 80}ms` }}
+      style={{ transitionDelay: `${index * 120}ms` }}
+      onMouseEnter={() => setHoveredSkill(`${categoryGradient}-${index}`)}
+      onMouseLeave={() => setHoveredSkill(null)}
     >
-      <div className="flex items-center space-x-3">
-        <div className="text-2xl group-hover:scale-110 transition-transform duration-300">
-          {skill.icon}
+      {/* Animated background gradient */}
+      <div
+        className={`absolute inset-0 bg-gradient-to-br ${categoryGradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}
+      ></div>
+
+      {/* Neon border effect */}
+      <div
+        className={`absolute inset-0 rounded-xl bg-gradient-to-r ${categoryGradient} opacity-0 group-hover:opacity-10 blur-sm transition-all duration-500`}
+      ></div>
+
+      <div className="relative z-10">
+        <div className="flex items-center space-x-4">
+          <div className="text-3xl group-hover:scale-125 transition-transform duration-300 drop-shadow-lg">
+            {skill.icon}
+          </div>
+          <h3 className="font-semibold text-white group-hover:text-gray-100 transition-colors text-lg">
+            {skill.name}
+          </h3>
         </div>
-        <h3 className="font-medium text-white  transition-colors">
-          {skill.name}
-        </h3>
-      </div>
 
-      {/* Subtle hover glow */}
-      <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-400/0 to-purple-400/0 group-hover:from-blue-400/5 group-hover:to-purple-400/5 transition-all duration-300"></div>
+        {/* Corner sparkle */}
+        <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:rotate-12">
+          <Sparkles className="w-4 h-4 text-yellow-400 drop-shadow-sm" />
+        </div>
 
-      {/* Corner sparkle */}
-      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <Sparkles className="w-3 h-3 text-yellow-400" />
+        {/* Floating particles effect */}
+        <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full opacity-0 group-hover:opacity-20 blur-md transition-all duration-500"></div>
       </div>
     </div>
   );
 
   return (
-    <section className="py-16" id="skills">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-20 relative overflow-hidden" id="skills">
+      {/* Background animated elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-4 -right-4 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-4 -left-4 w-72 h-72 bg-purple-500/5 rounded-full blur-3xl"></div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-16">
           <div
             className={`transform transition-all duration-1000 ${
               isVisible
                 ? "translate-y-0 opacity-100"
-                : "translate-y-6 opacity-0"
+                : "translate-y-8 opacity-0"
             }`}
           >
-            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-5 py-2 rounded-full mb-4 shadow-lg">
-              <Star className="w-4 h-4" />
-              <span className="font-semibold text-sm">Skills & Expertise</span>
+            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-700 text-white px-6 py-3 rounded-full mb-6 shadow-xl hover:shadow-2xl transition-all duration-300">
+              <Star className="w-5 h-5" />
+              <span className="font-bold text-sm tracking-wide">
+                SKILLS & EXPERTISE
+              </span>
+              <Zap className="w-4 h-4" />
             </div>
 
-            <h1 className="text-4xl font-bold text-white mb-3">
-              My Technical Skills
+            <h1 className="text-5xl  font-bold bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent mb-4 drop-shadow-sm">
+              Technical Skills
             </h1>
 
-            <p className="text-lg text-gray-400">
-              Technologies that power my development journey
+            <p className="text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
+              Technologies that power my development journey and bring ideas to
+              life
             </p>
           </div>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex justify-center mb-8">
-          <div className="flex space-x-1 p-1 bg-transparent rounded-2xl shadow-lg border border-gray-200">
+        <div className="flex justify-center mb-12">
+          <div className="flex flex-wrap justify-center gap-2 p-2 bg-gray-900/50 backdrop-blur-lg rounded-2xl shadow-2xl border border-gray-700/50">
             {skillsData.map((item, index) => (
               <button
                 key={index}
                 onClick={() => setActiveTab(index)}
-                className={`flex items-center space-x-2 px-4 py-3 rounded-xl font-medium transition-all duration-300 ${
+                className={`flex items-center space-x-3 px-6 py-4 rounded-xl font-semibold transition-all duration-300 transform ${
                   activeTab === index
-                    ? `bg-gradient-to-r ${item.gradient} text-white shadow-md transform scale-105`
-                    : "text-white hover:text-gray-800 hover:bg-gray-50"
+                    ? `bg-gradient-to-r ${item.gradient} text-white shadow-xl scale-105 hover:scale-110`
+                    : "text-gray-300 hover:text-white hover:bg-gray-800/50 hover:scale-105"
                 }`}
               >
-                {item.icon}
-                <span className="text-sm">{item.category}</span>
+                <div
+                  className={`transition-transform duration-300 ${
+                    activeTab === index ? "scale-110" : ""
+                  }`}
+                >
+                  {item.icon}
+                </div>
+                <span className="text-sm font-bold tracking-wide">
+                  {item.category}
+                </span>
               </button>
             ))}
           </div>
         </div>
 
         {/* Skills Content */}
-        <div className="relative min-h-[300px]">
+        <div className="relative min-h-[400px]">
           {skillsData.map((category, categoryIndex) => (
             <div
               key={categoryIndex}
-              className={`transition-all duration-500 ${
+              className={`transition-all duration-700 ${
                 activeTab === categoryIndex
                   ? "opacity-100 transform translate-y-0"
-                  : "opacity-0 transform translate-y-4 absolute inset-0 pointer-events-none"
+                  : "opacity-0 transform translate-y-8 absolute inset-0 pointer-events-none"
               }`}
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {category.skills.map((skill, skillIndex) => (
                   <SkillCard
                     key={skill.name}
                     skill={skill}
                     index={skillIndex}
+                    categoryGradient={category.gradient}
                   />
                 ))}
               </div>
@@ -157,16 +199,14 @@ const SkillsSection = () => {
         </div>
 
         {/* Bottom Message */}
-        <div
-          className={`text-center mt-12 transform transition-all duration-1000 ${
-            isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
-          }`}
-          style={{ transitionDelay: "800ms" }}
-        >
-          <div className="inline-block bg-transparent text-white px-6 py-3 rounded-xl shadow-md border border-gray-200">
-            <span className="font-medium">
-              Always learning, always growing 🚀
+        <div className="text-center">
+          <div className="inline-flex items-center gap-2 text-gray-400">
+            <div className="w-8 h-0.5 bg-gray-600"></div>
+            <span className="text-sm font-medium inline-flex items-center gap-2">
+              <span className="text-lg">🚀</span>
+              Always learning, always growing
             </span>
+            <div className="w-8 h-0.5 bg-gray-600"></div>
           </div>
         </div>
       </div>

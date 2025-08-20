@@ -1,24 +1,12 @@
 import React from "react";
-import {
-  Calendar,
-  MapPin,
-  Code,
-  Smartphone,
-  Users,
-  Bug,
-  Globe,
-} from "lucide-react";
 
 const ExperienceSection = () => {
   const skills = [
-    { icon: <Code className="w-4 h-4" />, text: "React.js & Angular" },
-    { icon: <Globe className="w-4 h-4" />, text: "Digital Marketing Pages" },
-    {
-      icon: <Smartphone className="w-4 h-4" />,
-      text: "Restaurant App Testing",
-    },
-    { icon: <Users className="w-4 h-4" />, text: "Cross-team Collaboration" },
-    { icon: <Bug className="w-4 h-4" />, text: "Bug Testing & Fixes" },
+    { text: "React.js & Angular" },
+    { text: "Digital Marketing Pages" },
+    { text: "Restaurant App Testing" },
+    { text: "Cross-team Collaboration" },
+    { text: "Bug Testing & Fixes" },
   ];
 
   const achievements = [
@@ -29,7 +17,10 @@ const ExperienceSection = () => {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto p-8  min-h-screen" id="experience">
+    <div
+      className="max-w-7xl mx-auto p-8 bg-black min-h-screen"
+      id="experience"
+    >
       {/* Section Header */}
       <div className="text-center mb-12">
         <h2 className="text-4xl font-bold text-white mb-4">
@@ -40,14 +31,8 @@ const ExperienceSection = () => {
 
       {/* Experience Card */}
       <div className="relative">
-        {/* Timeline Line */}
-        {/* <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-400 to-purple-400 hidden md:block"></div> */}
-
-        {/* Timeline Dot */}
-        {/* <div className="absolute left-6 top-8 w-4 h-4 bg-blue-500 rounded-full border-4 border-white shadow-lg hidden md:block"></div> */}
-
         {/* Main Experience Card */}
-        <div className=" bg-transparent rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden border border-slate-200">
+        <div className="bg-gray-900 rounded-2xl shadow-2xl hover:shadow-blue-500/20 transition-all duration-300 overflow-hidden border border-gray-700 hover:border-gray-600">
           {/* Card Header */}
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
             <h3 className="text-2xl font-bold mb-2">
@@ -55,11 +40,11 @@ const ExperienceSection = () => {
             </h3>
             <div className="flex flex-wrap gap-4 text-blue-100">
               <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
+                <span>📅</span>
                 <span className="font-medium">Feb 2025 – July 2025</span>
               </div>
               <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4" />
+                <span>📍</span>
                 <span className="font-medium">
                   Mentation PVT LTD | Vasai (E)
                 </span>
@@ -71,10 +56,10 @@ const ExperienceSection = () => {
           <div className="p-8">
             {/* Description */}
             <div className="mb-8">
-              <h4 className="text-lg font-semibold text-slate-300 mb-4">
+              <h4 className="text-lg font-semibold text-gray-200 mb-4">
                 Role Overview
               </h4>
-              <p className="text-slate-300 leading-relaxed">
+              <p className="text-gray-300 leading-relaxed">
                 Worked on front-end development using React.js and Angular,
                 created digital marketing landing pages, contributed to
                 real-time project development, tested and fixed bugs in a
@@ -87,45 +72,27 @@ const ExperienceSection = () => {
 
             {/* Key Skills Used */}
             <div className="mb-8">
-              <h4 className="text-lg font-semibold text-slate-300 mb-4">
+              <h4 className="text-lg font-semibold text-gray-200 mb-4">
                 Technologies & Skills
               </h4>
               <div className="flex flex-wrap gap-3">
                 {skills.map((skill, index) => (
                   <div
                     key={index}
-                    className="flex items-center gap-2 bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-2 rounded-full border border-blue-200 hover:scale-105 transition-transform duration-200"
+                    className="flex items-center gap-2 bg-gradient-to-r from-gray-800 to-gray-700 px-4 py-2 rounded-full border border-gray-600 hover:border-blue-500 hover:scale-105 transition-all duration-200"
                   >
-                    <span className="text-blue-600">{skill.icon}</span>
-                    <span className="text-slate-700 font-medium">
+                    <span className="text-blue-400">⚡</span>
+                    <span className="text-gray-200 font-medium">
                       {skill.text}
                     </span>
                   </div>
                 ))}
               </div>
             </div>
-
-            {/* Key Achievements */}
-            {/* <div>
-              <h4 className="text-lg font-semibold text-slate-800 mb-4">
-                Key Achievements
-              </h4>
-              <div className="grid gap-3">
-                {achievements.map((achievement, index) => (
-                  <div
-                    key={index}
-                    className="flex items-start gap-3 p-3 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border-l-4 border-green-400 hover:shadow-md transition-shadow duration-200"
-                  >
-                    <div className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <span className="text-slate-700">{achievement}</span>
-                  </div>
-                ))}
-              </div>
-            </div> */}
           </div>
 
           {/* Card Footer */}
-          <div className="bg-transparent px-8 py-4 border-t border-slate-200">
+          {/* <div className="bg-gray-800/50 px-8 py-4 border-t border-gray-700">
             <div className="flex flex-wrap gap-2">
               {[
                 "React.js",
@@ -138,25 +105,32 @@ const ExperienceSection = () => {
               ].map((tech, index) => (
                 <span
                   key={index}
-                  className="px-3 py-1 text-xs font-medium bg-white text-slate-600 rounded-full border border-slate-300"
+                  className="px-3 py-1 text-xs font-medium bg-gray-700 text-gray-300 rounded-full border border-gray-600 hover:border-blue-500 hover:bg-gray-600 transition-all duration-200"
                 >
                   {tech}
                 </span>
               ))}
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 
       {/* Additional Visual Elements */}
       <div className="mt-12 text-center">
-        <div className="inline-flex items-center gap-2 text-slate-500">
-          <div className="w-8 h-0.5 bg-slate-300"></div>
+        <div className="inline-flex items-center gap-2 text-gray-400">
+          <div className="w-8 h-0.5 bg-gray-600"></div>
           <span className="text-sm font-medium">
             6 Months of Professional Growth
           </span>
-          <div className="w-8 h-0.5 bg-slate-300"></div>
+          <div className="w-8 h-0.5 bg-gray-600"></div>
         </div>
+      </div>
+
+      {/* Optional: Add some floating particles for extra visual appeal */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-blue-400 rounded-full opacity-20 animate-pulse"></div>
+        <div className="absolute top-3/4 right-1/4 w-1 h-1 bg-purple-400 rounded-full opacity-30 animate-ping"></div>
+        <div className="absolute top-1/2 left-3/4 w-1.5 h-1.5 bg-green-400 rounded-full opacity-25 animate-pulse"></div>
       </div>
     </div>
   );
