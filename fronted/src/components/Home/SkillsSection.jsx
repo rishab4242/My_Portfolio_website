@@ -109,7 +109,7 @@ const SkillsSection = () => {
   );
 
   return (
-    <section className="py-20 relative overflow-hidden" id="skills">
+    <section className="py-10 relative overflow-hidden" id="skills">
       {/* Background animated elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-4 -right-4 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl"></div>
@@ -134,7 +134,7 @@ const SkillsSection = () => {
               <Zap className="w-4 h-4" />
             </div>
 
-            <h1 className="text-5xl  font-bold bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent mb-4 drop-shadow-sm">
+            <h1 className="text-4xl md:text-6xl  font-bold bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent mb-4 drop-shadow-sm">
               Technical Skills
             </h1>
 
@@ -152,7 +152,7 @@ const SkillsSection = () => {
               <button
                 key={index}
                 onClick={() => setActiveTab(index)}
-                className={`flex items-center space-x-3 px-6 py-4 rounded-xl font-semibold transition-all duration-300 transform ${
+                className={`flex items-center space-x-3 px-3 sm:px-4 md:px-6 py-3 md:py-4 rounded-xl font-semibold transition-all duration-300 transform ${
                   activeTab === index
                     ? `bg-gradient-to-r ${item.gradient} text-white shadow-xl scale-105 hover:scale-110`
                     : "text-gray-300 hover:text-white hover:bg-gray-800/50 hover:scale-105"
@@ -165,7 +165,7 @@ const SkillsSection = () => {
                 >
                   {item.icon}
                 </div>
-                <span className="text-sm font-bold tracking-wide">
+                <span className="text-[14px] sm:text-sm font-bold tracking-wide">
                   {item.category}
                 </span>
               </button>
@@ -199,7 +199,7 @@ const SkillsSection = () => {
         </div>
 
         {/* Bottom Message */}
-        <div className="text-center">
+        <div className="text-center max-sm:mt-14">
           <div className="inline-flex items-center gap-2 text-gray-400">
             <div className="w-8 h-0.5 bg-gray-600"></div>
             <span className="text-sm font-medium inline-flex items-center gap-2">

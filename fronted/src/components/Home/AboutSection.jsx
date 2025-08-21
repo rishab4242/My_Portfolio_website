@@ -1,6 +1,6 @@
 export default function AboutSection() {
   return (
-    <div className="bg-black text-white" id="about">
+    <div className="bg-black text-white py-10" id="about">
       {/* Main Heading */}
       <div className="text-center py-10">
         <h2 className="text-5xl font-bold text-white mb-4">About Me</h2>
@@ -8,9 +8,9 @@ export default function AboutSection() {
       </div>
 
       {/* Section 1 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-20 items-center px-6 md:px-16 py-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 md:gap-20 gap-15 items-center px-4 md:px-16 py-5">
         {/* Left Image */}
-        <div className="w-full h-96 bg-gray-900 md:h-[750px] rounded-xl shadow-lg">
+        <div className="w-full h-full  bg-gray-900 md:w-[550px] rounded-xl shadow-lg">
           {/* yahan pe apni image ka src lagao */}
           <img
             src="/me1.jpg"
@@ -21,7 +21,7 @@ export default function AboutSection() {
 
         {/* Right Text */}
         <div className="space-y-6 space-x-6">
-          <h3 className="uppercase text-3xl tracking-wider font-semibold text-gray-400">
+          <h3 className="uppercase text-3xl tracking-wider font-semibold text-white leading-tight">
             Passionate Full Stack Developer Ready to Make an Impact
           </h3>
           <p className="text-lg leading-relaxed text-gray-200">
@@ -31,16 +31,12 @@ export default function AboutSection() {
             development. I started learning through free resources and then
             completed a comprehensive 6-month MERN Stack development course,
             followed by a valuable 6-month internship where I gained hands-on
-            experience.
+            experience working on live projects. During my internship, I built
+            15–20 static pages for client projects using React and Tailwind,
+            redesigned official company websites, contributed to internal app testing,
+            and created SEO-related service pages.
           </p>
-          <p className="text-lg leading-relaxed text-gray-200">
-            Currently, I'm actively seeking full-time or entry-level
-            opportunities as a Full Stack Developer. What I love most about
-            coding is the joy of problem-solving and creating something
-            meaningful from scratch. When I'm not coding, you'll find me playing
-            kabaddi, trekking through scenic trails, or exploring new
-            technologies that keep my curiosity alive.
-          </p>
+
           <a
             href="#projects"
             className="inline-block px-6 py-3 border border-orange-400 text-white rounded-md hover:bg-orange-400 hover:text-black transition"

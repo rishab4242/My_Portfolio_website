@@ -43,7 +43,7 @@ export default function ProjectsSection() {
 
   return (
     <section
-      className=" text-white px-6 md:px-16 py-10 scroll-mt-20"
+      className=" text-white px-4 md:px-16 py-10 scroll-mt-20"
       id="projects"
     >
       <div className="text-center mb-16">
