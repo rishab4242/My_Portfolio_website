@@ -50,7 +50,7 @@ const CoffeeMeetingBox = () => {
         New Coffee Meeting Request:
         
         Name: ${meetingData.name}
-        Email: ${meetingData.email} // User's email
+        Email: ${meetingData.email} 
         Phone: ${meetingData.phone}
         Preferred Date: ${meetingData.date}
         Preferred Time: ${meetingData.time}

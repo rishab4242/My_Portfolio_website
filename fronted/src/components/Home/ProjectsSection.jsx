@@ -47,9 +47,10 @@ export default function ProjectsSection() {
       id="projects"
     >
       <div className="text-center mb-16">
-        <h2 className="text-4xl font-bold text-gray-100 mb-4 leading-tight">
+        <h2 className="text-5xl font-bold text-gray-100 mb-4 leading-tight">
           Featured Projects
         </h2>
+        <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
         <p className="text-gray-300 mt-4 text-lg">
           A showcase of some projects I've built using MERN stack and modern web
           technologies.
@@ -63,7 +64,7 @@ export default function ProjectsSection() {
             className="bg-gray-900 border border-gray-600 rounded-lg p-8 flex flex-col justify-between hover:border-blue-400 hover:bg-gray-750 transition-all duration-300"
           >
             <div className="space-y-4">
-              <h3 className="text-xl font-medium text-gray-100">
+              <h3 className="text-xl font-medium text-gray-100 leading-tight">
                 {project.title}
               </h3>
               <p className="text-gray-300 text-sm leading-relaxed">
