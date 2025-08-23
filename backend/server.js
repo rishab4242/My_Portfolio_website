@@ -32,18 +32,18 @@ transporter.verify((error, success) => {
 });
 
 app.post("/api/send-email", async (req, res) => {
-  const { to, subject, body, userEmail } = req.body; // Expect userEmail from frontend
+  const { to, subject, body, userEmail } = req.body; 
 
   if (!to || !subject || !body || !userEmail) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
   const mailOptions = {
-    from: process.env.GMAIL_USER, // Your email (rishabdakhale17@gmail.com)
-    to: process.env.GMAIL_USER, // Your email (rishabdakhale17@gmail.com)
+    from: process.env.GMAIL_USER, 
+    to: process.env.GMAIL_USER, 
     subject: subject,
-    text: `User Email: ${userEmail}\n\n${body}`, // Include user email in body
-    replyTo: userEmail, // User's email for replying
+    text: `User Email: ${userEmail}\n\n${body}`, 
+    replyTo: userEmail, 
   };
 
   try {
