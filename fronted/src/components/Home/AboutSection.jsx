@@ -3,7 +3,19 @@ import React, { useState, useEffect, useRef } from "react";
 export default function AboutSection() {
   const [isVisible, setIsVisible] = useState(false);
   const [imageScale, setImageScale] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const sectionRef = useRef(null);
+
+  // Check if device is mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -12,10 +24,16 @@ export default function AboutSection() {
           setIsVisible(true);
           setImageScale(true);
         } else {
-          setImageScale(false);
+          // On mobile, keep animations visible once triggered
+          if (!isMobile) {
+            setImageScale(false);
+          }
         }
       },
-      { threshold: 0.3 }
+      {
+        threshold: isMobile ? 0.1 : 0.3, // Lower threshold for mobile
+        rootMargin: isMobile ? "50px 0px" : "0px 0px", // Earlier trigger on mobile
+      }
     );
 
     if (sectionRef.current) {
@@ -23,11 +41,11 @@ export default function AboutSection() {
     }
 
     return () => observer.disconnect();
-  }, []);
+  }, [isMobile]);
 
   return (
     <div
-      className="bg-black text-white py-10 overflow-hidden"
+      className="bg-black text-white py-10 overflow-hidden relative"
       id="about"
       ref={sectionRef}
     >
@@ -41,7 +59,7 @@ export default function AboutSection() {
           About Me
         </h2>
         <div
-          className={`w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full transition-all duration-1200 delay-300 ${
+          className={`w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full transition-all duration-1200 delay-500 ${
             isVisible ? "opacity-100 scale-100" : "opacity-0 scale-0"
           }`}
         ></div>
@@ -51,7 +69,9 @@ export default function AboutSection() {
       <div className="grid grid-cols-1 md:grid-cols-2 md:gap-20 gap-15 items-center px-4 md:px-16 py-5">
         {/* Left Image */}
         <div
-          className={`w-full h-full bg-gray-900 md:w-[550px] rounded-xl shadow-lg relative overflow-hidden group transition-all duration-1000 delay-500 ${
+          className={`w-full h-full bg-gray-900 md:w-[550px] rounded-xl shadow-lg relative overflow-hidden group transition-all duration-1000 ${
+            isMobile ? "delay-700" : "delay-500"
+          } ${
             isVisible
               ? "opacity-100 translate-x-0"
               : "opacity-0 -translate-x-16"
@@ -79,7 +99,9 @@ export default function AboutSection() {
 
         {/* Right Text */}
         <div
-          className={`space-y-6 space-x-6 transition-all duration-1000 delay-700 ${
+          className={`space-y-6 space-x-6 transition-all duration-1000 ${
+            isMobile ? "delay-1200" : "delay-700"
+          } ${
             isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-16"
           }`}
         >
@@ -89,7 +111,7 @@ export default function AboutSection() {
             </span>
 
             {/* Decorative element */}
-            <div className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#e1a87a] to-transparent transition-all duration-1000 delay-1000 group-hover:w-full"></div>
+            <div className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#e1a87a] to-transparent transition-all duration-1000 delay-1500 hover:w-full"></div>
           </h3>
 
           <div className="relative">

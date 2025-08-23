@@ -40,7 +40,7 @@ export default function Home() {
       {showScrollButton && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-8 right-2 bg-orange-500 hover:bg-orange-600 text-white p-3 rounded-full shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110 z-50"
+          className="fixed bottom-8 right-2 bg-orange-500 hover:bg-orange-600 text-white p-3 rounded-full shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110 z-50 cursor-pointer"
           aria-label="Scroll to top"
         >
           <ChevronUp size={24} />

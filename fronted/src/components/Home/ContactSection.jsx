@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Mail,
   Phone,
@@ -7,15 +7,41 @@ import {
   Github,
   Linkedin,
   Send,
-  Clock,
   Calendar,
-  MessageCircle,
   Coffee,
-  Star,
+  CheckCircle,
   Users,
   Briefcase,
-  CheckCircle,
+  Star,
 } from "lucide-react";
+
+// AOS Animation Hook
+const useAOS = () => {
+  useEffect(() => {
+    const animateElements = () => {
+      const elements = document.querySelectorAll("[data-aos]");
+      elements.forEach((element, index) => {
+        const rect = element.getBoundingClientRect();
+        const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+
+        if (isVisible && !element.classList.contains("aos-animate")) {
+          setTimeout(() => {
+            element.classList.add("aos-animate");
+          }, index * 100); // Stagger animations
+        }
+      });
+    };
+
+    animateElements();
+    window.addEventListener("scroll", animateElements);
+    window.addEventListener("resize", animateElements);
+
+    return () => {
+      window.removeEventListener("scroll", animateElements);
+      window.removeEventListener("resize", animateElements);
+    };
+  }, []);
+};
 
 const CoffeeMeetingBox = () => {
   const [showForm, setShowForm] = useState(false);
@@ -112,7 +138,6 @@ const CoffeeMeetingBox = () => {
     "4:00 PM",
     "5:00 PM",
   ];
-
   const locations = [
     { value: "cafe", label: "Coffee Shop" },
     { value: "office", label: "Office/Co-working" },
@@ -125,11 +150,11 @@ const CoffeeMeetingBox = () => {
 
   if (isScheduled) {
     return (
-      <div className="bg-gradient-to-br from-green-900/20 to-blue-900/20 backdrop-blur-sm rounded-2xl p-6 border border-green-800/30 h-80 flex flex-col justify-center items-center text-center">
-        <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
+      <div className="bg-gradient-to-br from-green-900/20 to-blue-900/20 backdrop-blur-sm rounded-2xl p-6 border border-green-800/30 h-80 flex flex-col justify-center items-center text-center transform transition-all duration-500 scale-105 overflow-hidden">
+        <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4 animate-bounce">
           <CheckCircle className="w-8 h-8 text-green-500" />
         </div>
-        <h3 className="text-xl font-semibold text-green-400 mb-2">
+        <h3 className="text-xl font-semibold text-green-400 mb-2 animate-pulse">
           Meeting Scheduled!
         </h3>
         <p className="text-gray-400 text-sm mb-4">
@@ -144,10 +169,10 @@ const CoffeeMeetingBox = () => {
   }
 
   return (
-    <div className="bg-gradient-to-br from-orange-900/20 to-yellow-900/20 backdrop-blur-sm rounded-2xl p-6 border border-orange-800/30 h-80 flex flex-col">
+    <div className="bg-gradient-to-br from-orange-900/20 to-yellow-900/20 backdrop-blur-sm rounded-2xl p-6 border border-orange-800/30 h-80 flex flex-col transform transition-all duration-300 hover:scale-105 overflow-hidden">
       {!showForm ? (
         <div className="flex flex-col justify-center items-center h-full text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-yellow-600 rounded-full flex items-center justify-center mb-4">
+          <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-yellow-600 rounded-full flex items-center justify-center mb-4 transform transition-all duration-300 hover:rotate-12 hover:scale-110">
             <Coffee className="w-8 h-8 text-white" />
           </div>
           <h3 className="text-xl font-semibold mb-2">
@@ -158,14 +183,14 @@ const CoffeeMeetingBox = () => {
           </p>
           <button
             onClick={() => setShowForm(true)}
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-600 to-yellow-600 hover:from-orange-500 hover:to-yellow-500 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 text-sm"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-600 to-yellow-600 hover:from-orange-500 hover:to-yellow-500 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 text-sm transform hover:scale-105 hover:shadow-lg"
           >
             <Calendar className="w-4 h-4" />
             Book Now
           </button>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="flex flex-col h-full">
+        <div className="flex flex-col h-full overflow-x-hidden">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold flex items-center gap-2">
               <Coffee className="w-5 h-5 text-orange-500" />
@@ -174,7 +199,7 @@ const CoffeeMeetingBox = () => {
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-gray-400 hover:text-white transition-all duration-300 transform hover:scale-110 hover:rotate-90"
             >
               ✕
             </button>
@@ -188,7 +213,7 @@ const CoffeeMeetingBox = () => {
                 value={meetingData.name}
                 onChange={handleInputChange}
                 required
-                className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white placeholder-gray-400 focus:outline-none focus:border-orange-500 transition-colors text-xs"
+                className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white placeholder-gray-400 focus:outline-none focus:border-orange-500 transition-all duration-300 text-xs"
               />
               <input
                 type="email"
@@ -197,7 +222,7 @@ const CoffeeMeetingBox = () => {
                 value={meetingData.email}
                 onChange={handleInputChange}
                 required
-                className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white placeholder-gray-400 focus:outline-none focus:border-orange-500 transition-colors text-xs"
+                className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white placeholder-gray-400 focus:outline-none focus:border-orange-500 transition-all duration-300 text-xs"
               />
             </div>
             <input
@@ -207,7 +232,7 @@ const CoffeeMeetingBox = () => {
               value={meetingData.phone}
               onChange={handleInputChange}
               required
-              className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white placeholder-gray-400 focus:outline-none focus:border-orange-500 transition-colors text-xs"
+              className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white placeholder-gray-400 focus:outline-none focus:border-orange-500 transition-all duration-300 text-xs"
             />
             <div className="grid grid-cols-2 gap-2">
               <input
@@ -217,14 +242,14 @@ const CoffeeMeetingBox = () => {
                 onChange={handleInputChange}
                 min={minDate}
                 required
-                className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white focus:outline-none focus:border-orange-500 transition-colors text-xs"
+                className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white focus:outline-none focus:border-orange-500 transition-all duration-300 text-xs"
               />
               <select
                 name="time"
                 value={meetingData.time}
                 onChange={handleInputChange}
                 required
-                className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white focus:outline-none focus:border-orange-500 transition-colors text-xs"
+                className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white focus:outline-none focus:border-orange-500 transition-all duration-300 text-xs"
               >
                 <option value="" disabled>
                   Select Time
@@ -241,7 +266,7 @@ const CoffeeMeetingBox = () => {
               value={meetingData.location}
               onChange={handleInputChange}
               required
-              className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white focus:outline-none focus:border-orange-500 transition-colors text-xs"
+              className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white focus:outline-none focus:border-orange-500 transition-all duration-300 text-xs"
             >
               {locations.map((loc, index) => (
                 <option key={index} value={loc.value}>
@@ -255,13 +280,13 @@ const CoffeeMeetingBox = () => {
               value={meetingData.message}
               onChange={handleInputChange}
               rows="3"
-              className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white placeholder-gray-400 focus:outline-none focus:border-orange-500 transition-colors text-xs resize-none"
+              className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white placeholder-gray-400 focus:outline-none focus:border-orange-500 transition-all duration-300 text-xs resize-none"
             ></textarea>
           </div>
           <button
-            type="submit"
+            onClick={handleSubmit}
             disabled={isSubmitting}
-            className={`mt-4 inline-flex items-center gap-2 justify-center bg-gradient-to-r from-orange-600 to-yellow-600 hover:from-orange-500 hover:to-yellow-500 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 text-sm ${
+            className={`mt-4 inline-flex items-center gap-2 justify-center bg-gradient-to-r from-orange-600 to-yellow-600 hover:from-orange-500 hover:to-yellow-500 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 text-sm transform hover:scale-105 hover:shadow-lg ${
               isSubmitting ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
@@ -295,13 +320,15 @@ const CoffeeMeetingBox = () => {
               </>
             )}
           </button>
-        </form>
+        </div>
       )}
     </div>
   );
 };
 
 const ContactSection = () => {
+  useAOS();
+
   const handleResumeDownload = () => {
     const link = document.createElement("a");
     link.href = "/Full Stack Resume.pdf";
@@ -379,31 +406,51 @@ const ContactSection = () => {
     },
   ];
 
-  const stats = [
-    {
-      icon: <Briefcase className="w-6 h-6" />,
-      label: "Projects",
-      value: "15+",
-    },
-    { icon: <Users className="w-6 h-6" />, label: "Clients", value: "8+" },
-    {
-      icon: <Star className="w-6 h-6" />,
-      label: "Experience",
-      value: "2+ Years",
-    },
-  ];
-
-  const availability = [
-    { day: "Monday - Friday", time: "9:00 AM - 6:00 PM" },
-    { day: "Saturday", time: "10:00 AM - 4:00 PM" },
-    { day: "Sunday", time: "Emergency Only" },
-  ];
-
   return (
-    <section className="bg-black text-white py-10 scroll-mt-20" id="contact">
+    <section
+      className="bg-black text-white py-10 scroll-mt-20 overflow-hidden"
+      id="contact"
+    >
+      <style jsx>{`
+        [data-aos] {
+          opacity: 0;
+          transform: translateY(30px);
+          transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        [data-aos].aos-animate {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        [data-aos="fade-up"] {
+          transform: translateY(50px);
+        }
+
+        [data-aos="fade-left"] {
+          transform: translateX(-50px);
+        }
+
+        [data-aos="fade-right"] {
+          transform: translateX(50px);
+        }
+
+        [data-aos="zoom-in"] {
+          transform: scale(0.8);
+        }
+
+        [data-aos="flip-left"] {
+          transform: perspective(2500px) rotateY(-100deg);
+        }
+
+        [data-aos="slide-up"] {
+          transform: translateY(100px);
+        }
+      `}</style>
+
       <div className="max-w-7xl mx-auto md:px-6 px-4">
         {/* Section Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-16" data-aos="fade-up">
           <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white via-gray-300 to-gray-500 bg-clip-text text-transparent">
             Get In Touch
           </h2>
@@ -414,9 +461,12 @@ const ContactSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8  mx-auto ">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mx-auto">
           {/* Contact Information */}
-          <div className="bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 md:h-80 h-90 flex flex-col">
+          <div
+            className="bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 md:h-80 h-90 flex flex-col transform hover:scale-105"
+            data-aos="fade-right"
+          >
             <h3 className="text-xl font-semibold mb-6 flex items-center gap-3">
               <Send className="w-6 h-6 text-blue-500" />
               Contact Information
@@ -424,13 +474,18 @@ const ContactSection = () => {
 
             <div className="space-y-3 flex-1 flex flex-col justify-center">
               {contactInfo.map((item, index) => (
-                <div key={index} className="group">
+                <div
+                  key={index}
+                  className="group"
+                  data-aos="slide-up"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
                   {item.link ? (
                     <a
                       href={item.link}
-                      className="flex items-center gap-4 p-4 rounded-xl hover:bg-gray-800/50 transition-all duration-300 group-hover:transform group-hover:translate-x-2"
+                      className="flex items-center gap-4 p-4 rounded-xl hover:bg-gray-800/50 transition-all duration-300 group-hover:transform group-hover:translate-x-2 group-hover:scale-105"
                     >
-                      <div className="text-blue-500 group-hover:text-blue-400 transition-colors">
+                      <div className="text-blue-500 group-hover:text-blue-400 transition-colors transform group-hover:rotate-12">
                         {item.icon}
                       </div>
                       <div>
@@ -459,9 +514,12 @@ const ContactSection = () => {
           </div>
 
           {/* Resume Download */}
-          <div className="bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 h-80 flex flex-col justify-center">
+          <div
+            className="bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 h-80 flex flex-col justify-center transform hover:scale-105"
+            data-aos="zoom-in"
+          >
             <div className="text-center">
-              <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 transform transition-all duration-300 hover:rotate-12 hover:scale-110">
                 <Download className="w-8 h-8 text-black" />
               </div>
 
@@ -472,7 +530,7 @@ const ContactSection = () => {
 
               <button
                 onClick={handleResumeDownload}
-                className="inline-flex items-center gap-3 bg-white text-black font-semibold py-4 px-8 rounded-xl transition-all duration-300 hover:transform hover:scale-105 hover:bg-gray-200"
+                className="inline-flex items-center gap-3 bg-white text-black font-semibold py-4 px-8 rounded-xl transition-all duration-300 hover:transform hover:scale-105 hover:bg-gray-200 hover:shadow-lg"
               >
                 <Download className="w-5 h-5" />
                 Download PDF
@@ -481,7 +539,10 @@ const ContactSection = () => {
           </div>
 
           {/* Social Links */}
-          <div className="bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 h-80 flex flex-col justify-center">
+          <div
+            className="bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 h-80 flex flex-col justify-center transform hover:scale-105"
+            data-aos="fade-left"
+          >
             <h3 className="text-xl font-semibold mb-6 text-center">
               Connect With Me
             </h3>
@@ -496,6 +557,8 @@ const ContactSection = () => {
                     rel="noopener noreferrer"
                     className={`p-2 sm:p-3 bg-gray-800 rounded-xl border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:transform hover:scale-110 hover:-translate-y-1 text-gray-400 flex-shrink-0 ${social.color}`}
                     title={social.label}
+                    data-aos="flip-left"
+                    style={{ animationDelay: `${index * 0.1}s` }}
                   >
                     {social.icon}
                   </a>
@@ -508,12 +571,17 @@ const ContactSection = () => {
           </div>
 
           {/* Coffee Meeting Scheduler */}
-          <CoffeeMeetingBox />
+          <div data-aos="fade-up">
+            <CoffeeMeetingBox />
+          </div>
         </div>
       </div>
 
-      {/* Bottom Section - Full Width Border */}
-      <div className="mt-16 border-t border-gray-800 pt-8 text-center max-sm:px-2 max-sm:mb-5">
+      {/* Bottom Section */}
+      <div
+        className="mt-16 border-t border-gray-800 pt-8 text-center max-sm:px-2 max-sm:mb-5"
+        data-aos="fade-up"
+      >
         <p className="text-gray-500">
           © 2025 <span className="text-white">RISHAB DAKHALE.</span> Developed
           with passion using modern web technologies. All rights reserved.
