@@ -3,8 +3,10 @@ import React, { useState, useEffect, useRef } from "react";
 export default function AboutSection() {
   const [isVisible, setIsVisible] = useState(false);
   const [imageScale, setImageScale] = useState(false);
+  const [textVisible, setTextVisible] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const sectionRef = useRef(null);
+  const imageRef = useRef(null);
 
   // Check if device is mobile
   useEffect(() => {
@@ -18,29 +20,54 @@ export default function AboutSection() {
   }, []);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
+    // Observer for entire section (image and header)
+    const sectionObserver = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
           setImageScale(true);
         } else {
-          // On mobile, keep animations visible once triggered
+          // On mobile, keep image animations visible once triggered
           if (!isMobile) {
             setImageScale(false);
           }
         }
       },
       {
-        threshold: isMobile ? 0.1 : 0.3, // Lower threshold for mobile
-        rootMargin: isMobile ? "50px 0px" : "0px 0px", // Earlier trigger on mobile
+        threshold: isMobile ? 0.1 : 0.3,
+        rootMargin: isMobile ? "50px 0px" : "0px 0px",
       }
     );
 
     if (sectionRef.current) {
-      observer.observe(sectionRef.current);
+      sectionObserver.observe(sectionRef.current);
     }
 
-    return () => observer.disconnect();
+    // Observer for image bottom (mobile only)
+    let imageBottomObserver;
+    if (isMobile) {
+      imageBottomObserver = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setTimeout(() => setTextVisible(true), 300);
+          }
+        },
+        {
+          threshold: 1, // Trigger only when the entire image is in view
+          rootMargin: "0px 0px -100px 0px", // Trigger when bottom edge is 100px from viewport bottom
+          triggerOnce: true,
+        }
+      );
+
+      if (imageRef.current) {
+        imageBottomObserver.observe(imageRef.current);
+      }
+    }
+
+    return () => {
+      sectionObserver.disconnect();
+      if (imageBottomObserver) imageBottomObserver.disconnect();
+    };
   }, [isMobile]);
 
   return (
@@ -69,6 +96,7 @@ export default function AboutSection() {
       <div className="grid grid-cols-1 md:grid-cols-2 md:gap-20 gap-15 items-center px-4 md:px-16 py-5">
         {/* Left Image */}
         <div
+          ref={imageRef}
           className={`w-full h-full bg-gray-900 md:w-[550px] rounded-xl shadow-lg relative overflow-hidden group transition-all duration-1000 ${
             isMobile ? "delay-700" : "delay-500"
           } ${
@@ -99,10 +127,16 @@ export default function AboutSection() {
 
         {/* Right Text */}
         <div
-          className={`space-y-6 space-x-6 transition-all duration-1000 ${
-            isMobile ? "delay-1200" : "delay-700"
+          className={`space-y-6 space-x-6 transition-all ${
+            isMobile ? "duration-600 delay-800" : "duration-1000 delay-700"
           } ${
-            isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-16"
+            isMobile
+              ? textVisible
+                ? "opacity-100 translate-x-0"
+                : "opacity-0 translate-x-16"
+              : isVisible
+              ? "opacity-100 translate-x-0"
+              : "opacity-0 translate-x-16"
           }`}
         >
           <h3 className="uppercase text-3xl tracking-wider font-semibold text-white leading-tight relative">

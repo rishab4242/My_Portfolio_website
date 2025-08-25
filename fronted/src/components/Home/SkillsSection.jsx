@@ -1,4 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 import {
   Globe,
   Code2,
@@ -12,58 +14,14 @@ import {
 const SkillsSection = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [hoveredSkill, setHoveredSkill] = useState(null);
-  const [isInView, setIsInView] = useState(false);
-  const [headerInView, setHeaderInView] = useState(false);
-  const [tabsInView, setTabsInView] = useState(false);
-  const [contentInView, setContentInView] = useState(false);
-  const [bottomInView, setBottomInView] = useState(false);
-
-  // Refs for viewport detection
-  const sectionRef = useRef(null);
-  const headerRef = useRef(null);
-  const tabsRef = useRef(null);
-  const contentRef = useRef(null);
-  const bottomRef = useRef(null);
-
-  useEffect(() => {
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: "0px 0px -50px 0px",
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          if (entry.target === sectionRef.current) {
-            setIsInView(true);
-          } else if (entry.target === headerRef.current) {
-            setHeaderInView(true);
-          } else if (entry.target === tabsRef.current) {
-            setTabsInView(true);
-          } else if (entry.target === contentRef.current) {
-            setContentInView(true);
-          } else if (entry.target === bottomRef.current) {
-            setBottomInView(true);
-          }
-        }
-      });
-    }, observerOptions);
-
-    const elements = [sectionRef, headerRef, tabsRef, contentRef, bottomRef];
-    elements.forEach((ref) => {
-      if (ref.current) {
-        observer.observe(ref.current);
-      }
-    });
-
-    return () => {
-      elements.forEach((ref) => {
-        if (ref.current) {
-          observer.unobserve(ref.current);
-        }
-      });
-    };
-  }, []);
+  const { ref: sectionRef, inView: sectionInView } = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
+  const { ref: skillsRef, inView: skillsInView } = useInView({
+    triggerOnce: true,
+    threshold: window.innerWidth < 768 ? 0.3 : 0.2,
+  });
 
   const skillsData = [
     {
@@ -114,236 +72,309 @@ const SkillsSection = () => {
     },
   ];
 
-  const SkillCard = ({ skill, index, categoryGradient }) => {
-    return (
-      <div
-        className={`group relative bg-gray-900/60 backdrop-blur-sm rounded-xl p-6 shadow-xl border border-gray-700/50 cursor-pointer overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:scale-105 ${
-          contentInView
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 translate-y-8"
-        }`}
-        style={{
-          transitionDelay: contentInView ? `${300 + index * 80}ms` : "0ms",
-        }}
-        onMouseEnter={() => setHoveredSkill(`${categoryGradient}-${index}`)}
-        onMouseLeave={() => setHoveredSkill(null)}
-      >
-        {/* Animated background gradient */}
-        <div
-          className={`absolute inset-0 bg-gradient-to-br ${categoryGradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}
-        />
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.3,
+      },
+    },
+  };
 
-        {/* Neon border effect */}
-        <div
-          className={`absolute inset-0 rounded-xl bg-gradient-to-r ${categoryGradient} blur-sm opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
-        />
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30, scale: 0.9 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.8,
+        ease: "easeOut",
+      },
+    },
+  };
 
-        <div className="relative z-10">
-          <div className="flex items-center space-x-4">
-            <div className="text-3xl drop-shadow-lg transition-all duration-300 group-hover:scale-125 group-hover:rotate-3">
-              {skill.icon}
-            </div>
-            <h3 className="font-semibold text-white text-lg transition-colors duration-300 group-hover:text-gray-100">
-              {skill.name}
-            </h3>
-          </div>
+  const skillCardVariants = {
+    hidden: { opacity: 0, scale: 0.8, y: 20 },
+    visible: (index) => ({
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: {
+        delay: index * 0.05,
+        duration: 0.4,
+        ease: "easeOut",
+      },
+    }),
+  };
 
-          {/* Corner sparkle */}
-          <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-500 group-hover:animate-pulse">
-            <Sparkles className="w-4 h-4 text-yellow-400 drop-shadow-sm" />
-          </div>
+  const iconVariants = {
+    initial: { scale: 1, rotate: 0 },
+    pulse: {
+      scale: [1, 1.05, 1],
+      opacity: [1, 0.8, 1],
+      transition: {
+        duration: 3,
+        repeat: Infinity,
+        ease: "easeInOut",
+      },
+    },
+  };
 
-          {/* Floating particles effect */}
-          <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full blur-md opacity-0 group-hover:opacity-20 transition-opacity duration-500" />
+  const sparkleVariants = {
+    initial: { opacity: 0, scale: 0.8, rotate: 0 },
+    animate: {
+      opacity: [0, 1, 0],
+      scale: [0.8, 1.2, 0.8],
+      rotate: [0, 180, 360],
+      transition: {
+        duration: 2,
+        repeat: Infinity,
+        ease: "easeInOut",
+      },
+    },
+  };
+
+  const floatingParticleVariants = {
+    initial: { y: 0, opacity: 0 },
+    animate: {
+      y: [-8, 0, -8],
+      opacity: [0, 0.2, 0],
+      transition: {
+        duration: 3,
+        repeat: Infinity,
+        ease: "easeInOut",
+      },
+    },
+  };
+
+  const backgroundVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 1,
+        ease: "easeOut",
+      },
+    },
+  };
+
+  const tabVariants = {
+    inactive: { scale: 1, backgroundColor: "rgba(0, 0, 0, 0)" },
+    active: {
+      scale: 1.05,
+      transition: { duration: 0.3, ease: "easeInOut" },
+    },
+    hover: {
+      scale: 1.02,
+      backgroundColor: "rgba(55, 65, 81, 0.5)",
+      transition: { duration: 0.2 },
+    },
+  };
+
+  const SkillCard = ({ skill, index, categoryGradient }) => (
+    <motion.div
+      custom={index}
+      initial="hidden"
+      animate={skillsInView ? "visible" : "hidden"}
+      variants={skillCardVariants}
+      className="relative bg-gray-900/60 backdrop-blur-sm rounded-xl p-6 shadow-xl border border-gray-700/50"
+    >
+      <div className="relative z-10">
+        <div className="flex items-center space-x-4">
+          <motion.div
+            variants={iconVariants}
+            initial="initial"
+            animate="pulse"
+            className="text-3xl drop-shadow-lg"
+          >
+            {skill.icon}
+          </motion.div>
+          <h3 className="font-semibold text-white text-lg">{skill.name}</h3>
         </div>
+        <motion.div
+          variants={sparkleVariants}
+          initial="initial"
+          animate="animate"
+          className="absolute top-3 right-3"
+        >
+          <Sparkles className="w-4 h-4 text-yellow-400 drop-shadow-sm" />
+        </motion.div>
+        <motion.div
+          variants={floatingParticleVariants}
+          initial="initial"
+          animate="animate"
+          className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full blur-md"
+        />
       </div>
-    );
+    </motion.div>
+  );
+
+  // Dynamic margin-top based on number of skills for mobile
+  const getDynamicMargin = () => {
+    const skillCount = skillsData[activeTab].skills.length;
+    if (window.innerWidth < 768) {
+      if (skillCount >= 5) return "mt-14"; // Larger margin for more skills
+      if (skillCount >= 3) return "mt-10"; // Medium margin for moderate skills
+      return "mt-8"; // Smaller margin for fewer skills
+    }
+    return "mt-10"; // Consistent margin for desktop
   };
 
   return (
     <section
       ref={sectionRef}
-      className="py-10 relative overflow-hidden bg-black"
+      className="py-10 relative overflow-hidden"
       id="skills"
     >
-      {/* Background animated elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div
-          className={`absolute -top-4 -right-4 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl transition-all duration-1000 ${
-            isInView ? "opacity-100 scale-100" : "opacity-0 scale-75"
-          }`}
-          style={{ transitionDelay: "300ms" }}
+        <motion.div
+          variants={backgroundVariants}
+          initial="hidden"
+          animate={sectionInView ? "visible" : "hidden"}
+          transition={{ delay: 0.5 }}
+          className="absolute -top-4 -right-4 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl"
         />
-        <div
-          className={`absolute -bottom-4 -left-4 w-72 h-72 bg-purple-500/5 rounded-full blur-3xl transition-all duration-1000 ${
-            isInView ? "opacity-100 scale-100" : "opacity-0 scale-75"
-          }`}
-          style={{ transitionDelay: "500ms" }}
+        <motion.div
+          variants={backgroundVariants}
+          initial="hidden"
+          animate={sectionInView ? "visible" : "hidden"}
+          transition={{ delay: 0.7 }}
+          className="absolute -bottom-4 -left-4 w-72 h-72 bg-purple-500/5 rounded-full blur-3xl"
         />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Header */}
-        <div
-          ref={headerRef}
-          className={`text-center mb-16 transition-all duration-800 ${
-            headerInView
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-10"
-          }`}
-          style={{
-            transitionDelay: headerInView ? "0ms" : "0ms",
-          }}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate={sectionInView ? "visible" : "hidden"}
+          className="text-center mb-16"
         >
-          <div
-            className={`inline-flex items-center space-x-2 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-700 text-white px-6 py-3 rounded-full mb-6 shadow-xl transition-all duration-600 ${
-              headerInView ? "opacity-100 scale-100" : "opacity-0 scale-90"
-            }`}
+          <motion.div
+            variants={itemVariants}
+            className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-700 text-white px-6 py-3 rounded-full mb-6 shadow-xl"
           >
-            <div
-              className={`transition-transform duration-500 ${
-                headerInView ? "rotate-360" : "rotate-0"
-              }`}
+            <motion.div
+              whileHover={{ rotate: 360 }}
+              transition={{ duration: 0.5 }}
             >
               <Star className="w-5 h-5" />
-            </div>
+            </motion.div>
             <span className="font-bold text-sm tracking-wide">
               SKILLS & EXPERTISE
             </span>
-            <div
-              className={`transition-all duration-500 ${
-                headerInView ? "animate-pulse" : ""
-              }`}
+            <motion.div
+              animate={{ scale: [1, 1.2, 1], rotate: [0, 5, -5, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
             >
               <Zap className="w-4 h-4" />
-            </div>
-          </div>
-
-          <h1
-            className={`text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent mb-4 drop-shadow-sm transition-all duration-800 ${
-              headerInView
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-5"
-            }`}
-            style={{
-              transitionDelay: headerInView ? "200ms" : "0ms",
-            }}
+            </motion.div>
+          </motion.div>
+          <motion.h1
+            variants={itemVariants}
+            className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent mb-4 drop-shadow-sm"
           >
             Technical Skills
-          </h1>
-
-          <p
-            className={`text-lg text-gray-400 max-w-3xl mx-auto leading-relaxed transition-all duration-800 ${
-              headerInView
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-5"
-            }`}
-            style={{
-              transitionDelay: headerInView ? "400ms" : "0ms",
-            }}
+          </motion.h1>
+          <motion.p
+            variants={itemVariants}
+            className="text-lg text-gray-400 max-w-3xl mx-auto leading-relaxed"
           >
             Technologies that power my development journey and bring ideas to
             life
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
-        {/* Tab Navigation */}
-        <div
-          ref={tabsRef}
-          className={`flex justify-center mb-12 transition-all duration-800 ${
-            tabsInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-          }`}
-          style={{
-            transitionDelay: tabsInView ? "200ms" : "0ms",
-          }}
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={sectionInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+          transition={{ delay: 0.2, duration: 0.8 }}
+          className="flex justify-center mb-12"
         >
           <div className="flex flex-wrap justify-center gap-2 p-2 bg-gray-900/50 backdrop-blur-lg rounded-2xl shadow-2xl border border-gray-700/50">
             {skillsData.map((item, index) => (
-              <button
+              <motion.button
                 key={index}
+                variants={tabVariants}
+                initial="inactive"
+                animate={activeTab === index ? "active" : "inactive"}
+                whileHover="hover"
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setActiveTab(index)}
-                className={`flex items-center space-x-3 px-3 sm:px-4 md:px-6 py-3 md:py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-105 ${
+                className={`flex items-center space-x-3 px-3 sm:px-4 md:px-6 py-3 md:py-4 rounded-xl font-semibold transition-all duration-300 ${
                   activeTab === index
-                    ? `bg-gradient-to-r ${item.gradient} text-white shadow-xl scale-105`
-                    : "text-gray-300 hover:bg-gray-700/50"
+                    ? `bg-gradient-to-r ${item.gradient} text-white shadow-xl`
+                    : "text-gray-300"
                 }`}
               >
-                <div className="transition-transform duration-300 hover:rotate-12">
+                <motion.div
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.5 }}
+                >
                   {item.icon}
-                </div>
+                </motion.div>
                 <span className="text-[14px] sm:text-sm font-bold tracking-wide">
                   {item.category}
                 </span>
-              </button>
+              </motion.button>
             ))}
           </div>
-        </div>
+        </motion.div>
 
-        {/* Skills Content */}
-        <div ref={contentRef} className="relative min-h-[400px]">
-          <div
-            className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 transition-opacity duration-400 ${
-              contentInView ? "opacity-100" : "opacity-0"
-            }`}
-            key={activeTab}
-          >
-            {skillsData[activeTab].skills.map((skill, skillIndex) => (
-              <SkillCard
-                key={`${activeTab}-${skill.name}`}
-                skill={skill}
-                index={skillIndex}
-                categoryGradient={skillsData[activeTab].gradient}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Bottom Message */}
         <div
-          ref={bottomRef}
-          className={`text-center max-sm:mt-14 transition-all duration-800 ${
-            bottomInView
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-8"
-          }`}
-          style={{
-            transitionDelay: bottomInView ? "800ms" : "0ms",
-          }}
+          ref={skillsRef}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          {skillsData[activeTab].skills.map((skill, skillIndex) => (
+            <SkillCard
+              key={`${activeTab}-${skill.name}`}
+              skill={skill}
+              index={skillIndex}
+              categoryGradient={skillsData[activeTab].gradient}
+            />
+          ))}
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={sectionInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ delay: 0.4, duration: 0.8 }}
+          className={`text-center ${getDynamicMargin()}`}
         >
           <div className="inline-flex items-center gap-2 text-gray-400">
-            <div
-              className={`h-0.5 bg-gray-600 transition-all duration-800 ${
-                bottomInView ? "w-8" : "w-0"
-              }`}
-              style={{
-                transitionDelay: bottomInView ? "1000ms" : "0ms",
-              }}
+            <motion.div
+              initial={{ width: 0 }}
+              animate={sectionInView ? { width: 32 } : { width: 0 }}
+              transition={{ delay: 0.6, duration: 0.5 }}
+              className="h-0.5 bg-gray-600"
             />
             <span className="text-sm font-medium inline-flex items-center gap-2">
-              <span
-                className={`text-lg transition-all duration-500 ${
-                  bottomInView ? "animate-bounce" : ""
-                }`}
-                style={{
-                  animationDelay: bottomInView ? "1200ms" : "0ms",
-                  animationDuration: "2s",
-                  animationIterationCount: "infinite",
+              <motion.span
+                animate={sectionInView ? { y: [0, -5, 0] } : { y: 0 }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 0.8,
                 }}
+                className="text-lg"
               >
                 🚀
-              </span>
+              </motion.span>
               Always learning, always growing
             </span>
-            <div
-              className={`h-0.5 bg-gray-600 transition-all duration-800 ${
-                bottomInView ? "w-8" : "w-0"
-              }`}
-              style={{
-                transitionDelay: bottomInView ? "1000ms" : "0ms",
-              }}
+            <motion.div
+              initial={{ width: 0 }}
+              animate={sectionInView ? { width: 32 } : { width: 0 }}
+              transition={{ delay: 0.6, duration: 0.5 }}
+              className="h-0.5 bg-gray-600"
             />
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

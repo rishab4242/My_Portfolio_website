@@ -10,9 +10,6 @@ import {
   Calendar,
   Coffee,
   CheckCircle,
-  Users,
-  Briefcase,
-  Star,
 } from "lucide-react";
 
 // AOS Animation Hook
@@ -27,7 +24,7 @@ const useAOS = () => {
         if (isVisible && !element.classList.contains("aos-animate")) {
           setTimeout(() => {
             element.classList.add("aos-animate");
-          }, index * 100); // Stagger animations
+          }, index * 50); // Reduced stagger delay from 100ms to 50ms
         }
       });
     };
@@ -70,7 +67,7 @@ const CoffeeMeetingBox = () => {
 
     try {
       const emailContent = {
-        to: "rishabdakhale17@gmail.com", // Your email
+        to: "rishabdakhale17@gmail.com",
         subject: `New Coffee Meeting Request - ${meetingData.name}`,
         body: `
         New Coffee Meeting Request:
@@ -91,7 +88,7 @@ const CoffeeMeetingBox = () => {
         
         Please confirm the meeting details.
       `,
-        userEmail: meetingData.email, // Send user's email to backend
+        userEmail: meetingData.email,
       };
 
       const response = await fetch("http://localhost:5000/api/send-email", {
@@ -411,11 +408,11 @@ const ContactSection = () => {
       className="bg-black text-white py-10 scroll-mt-20 overflow-hidden"
       id="contact"
     >
-      <style jsx>{`
+      <style jsx="true">{`
         [data-aos] {
           opacity: 0;
-          transform: translateY(30px);
-          transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+          transform: translateY(20px);
+          transition: opacity 0.4s ease-out, transform 0.4s ease-out;
         }
 
         [data-aos].aos-animate {
@@ -424,19 +421,19 @@ const ContactSection = () => {
         }
 
         [data-aos="fade-up"] {
-          transform: translateY(50px);
+          transform: translateY(30px);
         }
 
         [data-aos="fade-left"] {
-          transform: translateX(-50px);
+          transform: translateX(-30px);
         }
 
         [data-aos="fade-right"] {
-          transform: translateX(50px);
+          transform: translateX(30px);
         }
 
         [data-aos="zoom-in"] {
-          transform: scale(0.8);
+          transform: scale(0.9);
         }
 
         [data-aos="flip-left"] {
@@ -444,7 +441,7 @@ const ContactSection = () => {
         }
 
         [data-aos="slide-up"] {
-          transform: translateY(100px);
+          transform: translateY(50px);
         }
       `}</style>
 
@@ -478,7 +475,7 @@ const ContactSection = () => {
                   key={index}
                   className="group"
                   data-aos="slide-up"
-                  style={{ animationDelay: `${index * 0.1}s` }}
+                  style={{ animationDelay: `${index * 0.05}s` }}
                 >
                   {item.link ? (
                     <a
@@ -558,7 +555,7 @@ const ContactSection = () => {
                     className={`p-2 sm:p-3 bg-gray-800 rounded-xl border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:transform hover:scale-110 hover:-translate-y-1 text-gray-400 flex-shrink-0 ${social.color}`}
                     title={social.label}
                     data-aos="flip-left"
-                    style={{ animationDelay: `${index * 0.1}s` }}
+                    style={{ animationDelay: `${index * 0.05}s` }}
                   >
                     {social.icon}
                   </a>
