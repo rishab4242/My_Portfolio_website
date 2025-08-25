@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+/* Define custom theme tokens */
+@theme {
+  --font-heading: "Playfair Display", "Cormorant Garamond", "Times New Roman", serif;
+  --tracking-tightest: 0.02em;
+  --leading-custom: 0.95;
+}
+
+/* Apply globally */
+@layer base {
+
+  h1,
+  h2,
+  h3 {
+    @apply font-heading font-light tracking-tightest leading-custom;
+  }
+
+  nav button {
+    font-family: "Poppins" !important;
+  }
+
+  a {
+    font-family: "Poppins" !important;
+
+  }
+
+  #about,
+  #skills,
+  #experience,
+  #projects,
+  #contact {
+    font-family: "Poppins";
+  }
+}
+
+
+
