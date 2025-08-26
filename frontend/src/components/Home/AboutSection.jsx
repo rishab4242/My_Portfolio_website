@@ -109,8 +109,8 @@ export default function AboutSection() {
           <img
             src="/me1.jpg"
             alt="Section 1"
-            className={`w-full h-full object-cover rounded-xl transition-all duration-700 group-hover:scale-110 group-hover:brightness-110 ${
-              imageScale ? "scale-105" : "scale-100"
+            className={`w-full h-full object-cover rounded-xl transition-all duration-700 md:group-hover:scale-110 group-hover:brightness-110 ${
+              imageScale ? "md:scale-105" : "md:scale-100"
             }`}
           />
 
@@ -119,10 +119,6 @@ export default function AboutSection() {
 
           {/* Decorative border that glows on hover */}
           <div className="absolute inset-0 rounded-xl border-2 border-transparent group-hover:border-[#e1a87a]/50 group-hover:shadow-lg group-hover:shadow-[#e1a87a]/20 transition-all duration-500"></div>
-
-          {/* Floating particles effect */}
-          <div className="absolute top-4 right-4 w-2 h-2 bg-blue-500 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300"></div>
-          <div className="absolute bottom-6 left-6 w-1.5 h-1.5 bg-purple-500 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-all duration-500 delay-200"></div>
         </div>
 
         {/* Right Text */}
@@ -184,9 +180,7 @@ export default function AboutSection() {
               </span>
             </a>
 
-            {/* Floating dots around button */}
-            <div className="absolute -top-2 -right-2 w-1 h-1 bg-[#e1a87a] rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-bounce transition-all duration-300 delay-100"></div>
-            <div className="absolute -bottom-2 -left-2 w-1.5 h-1.5 bg-blue-500 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300 delay-200"></div>
+            
           </div>
         </div>
       </div>

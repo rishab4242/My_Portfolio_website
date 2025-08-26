@@ -97,15 +97,18 @@ const SkillsSection = () => {
   };
 
   const skillCardVariants = {
-    hidden: { opacity: 0, scale: 0.8, y: 20 },
+    hidden: { opacity: 0, scale: 0.9, y: 20 },
     visible: (index) => ({
       opacity: 1,
       scale: 1,
       y: 0,
       transition: {
-        delay: index * 0.05,
-        duration: 0.4,
-        ease: "easeOut",
+        delay: index * 0.2, // Increased delay for sequential reveal
+        duration: 0.6, // Slightly longer duration for smoother effect
+        ease: [0.6, 0.01, 0.2, 0.95], // Custom cubic-bezier for smooth easing
+        type: "spring", // Spring animation for natural bounce
+        stiffness: 100,
+        damping: 20,
       },
     }),
   };
@@ -217,11 +220,11 @@ const SkillsSection = () => {
   const getDynamicMargin = () => {
     const skillCount = skillsData[activeTab].skills.length;
     if (window.innerWidth < 768) {
-      if (skillCount >= 5) return "mt-14"; // Larger margin for more skills
-      if (skillCount >= 3) return "mt-10"; // Medium margin for moderate skills
-      return "mt-8"; // Smaller margin for fewer skills
+      if (skillCount >= 5) return "mt-14";
+      if (skillCount >= 3) return "mt-10";
+      return "mt-8";
     }
-    return "mt-10"; // Consistent margin for desktop
+    return "mt-10";
   };
 
   return (
