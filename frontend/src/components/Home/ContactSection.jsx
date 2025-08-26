@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import {
   Mail,
   Phone,
@@ -40,6 +42,18 @@ const useAOS = () => {
   }, []);
 };
 
+const CustomDateInput = React.forwardRef(({ value, onClick }, ref) => (
+  <button
+    type="button"
+    onClick={onClick}
+    ref={ref}
+    className="w-full flex items-center justify-between px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white text-xs"
+  >
+    <span>{value || "Select Date"}</span>
+    <Calendar className="w-4 h-4 text-gray-400" />
+  </button>
+));
+
 const CoffeeMeetingBox = () => {
   const [showForm, setShowForm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -48,7 +62,7 @@ const CoffeeMeetingBox = () => {
     name: "",
     email: "",
     phone: "",
-    date: "",
+    date: new Date(),
     time: "",
     location: "cafe",
     message: "",
@@ -59,6 +73,10 @@ const CoffeeMeetingBox = () => {
       ...meetingData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleDateChange = (date) => {
+    setMeetingData({ ...meetingData, date });
   };
 
   const handleSubmit = async (e) => {
@@ -91,17 +109,16 @@ const CoffeeMeetingBox = () => {
         userEmail: meetingData.email,
       };
 
-      const response = await fetch("https://my-portfolio-website-43sw.onrender.com/api/send-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(emailContent),
-      });
+      const response = await fetch(
+        "https://my-portfolio-website-43sw.onrender.com/api/send-email",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(emailContent),
+        }
+      );
 
-      if (!response.ok) {
-        throw new Error("Failed to send email");
-      }
+      if (!response.ok) throw new Error("Failed to send email");
 
       setIsSubmitting(false);
       setIsScheduled(true);
@@ -109,7 +126,7 @@ const CoffeeMeetingBox = () => {
         name: "",
         email: "",
         phone: "",
-        date: "",
+        date: new Date(),
         time: "",
         location: "cafe",
         message: "",
@@ -143,11 +160,10 @@ const CoffeeMeetingBox = () => {
 
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
-  const minDate = tomorrow.toISOString().split("T")[0];
 
   if (isScheduled) {
     return (
-      <div className="bg-gradient-to-br from-green-900/20 to-blue-900/20 backdrop-blur-sm rounded-2xl p-6 border border-green-800/30 h-80 flex flex-col justify-center items-center text-center transform transition-all duration-500 scale-105 overflow-hidden">
+      <div className="bg-gradient-to-br from-green-900/20 to-blue-900/20 backdrop-blur-sm rounded-2xl p-6 border border-green-800/30 h-80 flex flex-col justify-center items-center text-center">
         <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4 animate-bounce">
           <CheckCircle className="w-8 h-8 text-green-500" />
         </div>
@@ -166,10 +182,10 @@ const CoffeeMeetingBox = () => {
   }
 
   return (
-    <div className="bg-gradient-to-br from-orange-900/20 to-yellow-900/20 backdrop-blur-sm rounded-2xl p-6 border border-orange-800/30 h-80 flex flex-col transform transition-all duration-300 hover:scale-105 overflow-hidden">
+    <div className="bg-gradient-to-br from-orange-900/20 to-yellow-900/20 backdrop-blur-sm rounded-2xl p-6 border border-orange-800/30 h-80 flex flex-col">
       {!showForm ? (
         <div className="flex flex-col justify-center items-center h-full text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-yellow-600 rounded-full flex items-center justify-center mb-4 transform transition-all duration-300 hover:rotate-12 hover:scale-110">
+          <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-yellow-600 rounded-full flex items-center justify-center mb-4">
             <Coffee className="w-8 h-8 text-white" />
           </div>
           <h3 className="text-xl font-semibold mb-2">
@@ -180,7 +196,7 @@ const CoffeeMeetingBox = () => {
           </p>
           <button
             onClick={() => setShowForm(true)}
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-600 to-yellow-600 hover:from-orange-500 hover:to-yellow-500 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 text-sm transform hover:scale-105 hover:shadow-lg"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-600 to-yellow-600 text-white font-semibold py-2 px-4 rounded-lg text-sm"
           >
             <Calendar className="w-4 h-4" />
             Book Now
@@ -196,12 +212,13 @@ const CoffeeMeetingBox = () => {
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="text-gray-400 hover:text-white transition-all duration-300 transform hover:scale-110 hover:rotate-90"
+              className="text-gray-400 hover:text-white"
             >
               ✕
             </button>
           </div>
           <div className="flex-1 overflow-y-auto space-y-3 pr-2">
+            {/* Name + Email */}
             <div className="grid grid-cols-2 gap-2">
               <input
                 type="text"
@@ -209,8 +226,7 @@ const CoffeeMeetingBox = () => {
                 placeholder="Your Name"
                 value={meetingData.name}
                 onChange={handleInputChange}
-                required
-                className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white placeholder-gray-400 focus:outline-none focus:border-orange-500 transition-all duration-300 text-xs"
+                className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white text-xs"
               />
               <input
                 type="email"
@@ -218,72 +234,76 @@ const CoffeeMeetingBox = () => {
                 placeholder="Your Email"
                 value={meetingData.email}
                 onChange={handleInputChange}
-                required
-                className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white placeholder-gray-400 focus:outline-none focus:border-orange-500 transition-all duration-300 text-xs"
+                className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white text-xs"
               />
             </div>
+
+            {/* Phone */}
             <input
               type="tel"
               name="phone"
               placeholder="Phone Number"
               value={meetingData.phone}
               onChange={handleInputChange}
-              required
-              className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white placeholder-gray-400 focus:outline-none focus:border-orange-500 transition-all duration-300 text-xs"
+              className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white text-xs"
             />
+
+            {/* Date + Time */}
             <div className="grid grid-cols-2 gap-2">
-              <input
-                type="date"
-                name="date"
-                value={meetingData.date}
-                onChange={handleInputChange}
-                min={minDate}
-                required
-                className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white focus:outline-none focus:border-orange-500 transition-all duration-300 text-xs"
+              <DatePicker
+                selected={meetingData.date}
+                onChange={handleDateChange}
+                minDate={tomorrow}
+                dateFormat="dd/MM/yyyy"
+                customInput={<CustomDateInput />}
               />
               <select
                 name="time"
                 value={meetingData.time}
                 onChange={handleInputChange}
-                required
-                className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white focus:outline-none focus:border-orange-500 transition-all duration-300 text-xs"
+                className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white text-xs"
               >
                 <option value="" disabled>
                   Select Time
                 </option>
-                {timeSlots.map((slot, index) => (
-                  <option key={index} value={slot}>
+                {timeSlots.map((slot, i) => (
+                  <option key={i} value={slot}>
                     {slot}
                   </option>
                 ))}
               </select>
             </div>
+
+            {/* Location */}
             <select
               name="location"
               value={meetingData.location}
               onChange={handleInputChange}
-              required
-              className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white focus:outline-none focus:border-orange-500 transition-all duration-300 text-xs"
+              className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white text-xs"
             >
-              {locations.map((loc, index) => (
-                <option key={index} value={loc.value}>
+              {locations.map((loc, i) => (
+                <option key={i} value={loc.value}>
                   {loc.label}
                 </option>
               ))}
             </select>
+
+            {/* Message */}
             <textarea
               name="message"
               placeholder="Your Message"
               value={meetingData.message}
               onChange={handleInputChange}
               rows="3"
-              className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white placeholder-gray-400 focus:outline-none focus:border-orange-500 transition-all duration-300 text-xs resize-none"
+              className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white text-xs resize-none"
             ></textarea>
           </div>
+
+          {/* Submit button */}
           <button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className={`mt-4 inline-flex items-center gap-2 justify-center bg-gradient-to-r from-orange-600 to-yellow-600 hover:from-orange-500 hover:to-yellow-500 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 text-sm transform hover:scale-105 hover:shadow-lg ${
+            className={`mt-4 inline-flex items-center gap-2 justify-center bg-gradient-to-r from-orange-600 to-yellow-600 text-white font-semibold py-2 px-4 rounded-lg text-sm ${
               isSubmitting ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
@@ -566,9 +586,9 @@ const ContactSection = () => {
                     href={social.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`p-2 sm:p-3 bg-gray-800 rounded-xl border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:transform hover:scale-100 hover:-translate-y-1 text-gray-400 flex-shrink-0 ${social.color} ${
-                      social.className || ""
-                    }`}
+                    className={`p-2 sm:p-3 bg-gray-800 rounded-xl border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:transform hover:scale-100 hover:-translate-y-1 text-gray-400 flex-shrink-0 ${
+                      social.color
+                    } ${social.className || ""}`}
                     title={social.label}
                     data-aos="flip-left"
                     style={{ animationDelay: `${index * 0.05}s` }}
