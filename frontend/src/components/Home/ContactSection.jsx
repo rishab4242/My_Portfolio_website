@@ -203,7 +203,7 @@ const CoffeeMeetingBox = () => {
           </button>
         </div>
       ) : (
-        <div className="flex flex-col h-full overflow-x-hidden">
+        <div className="flex flex-col h-full overflow-x-hidden px-2 pt-2">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold flex items-center gap-2">
               <Coffee className="w-5 h-5 text-orange-500" />
@@ -217,7 +217,7 @@ const CoffeeMeetingBox = () => {
               ✕
             </button>
           </div>
-          <div className="flex-1 overflow-y-auto space-y-3 pr-2">
+          <div className="flex-1 overflow-y-auto space-y-3 pr-2 px-2 pt-2">
             {/* Name + Email */}
             <div className="grid grid-cols-2 gap-2">
               <input
@@ -226,8 +226,9 @@ const CoffeeMeetingBox = () => {
                 placeholder="Your Name"
                 value={meetingData.name}
                 onChange={handleInputChange}
-                className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white text-xs"
+                className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white text-xs box-border"
               />
+
               <input
                 type="email"
                 name="email"
