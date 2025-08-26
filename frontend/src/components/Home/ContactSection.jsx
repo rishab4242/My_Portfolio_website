@@ -257,8 +257,9 @@ const CoffeeMeetingBox = () => {
                 dateFormat="dd/MM/yyyy"
                 customInput={<CustomDateInput />}
                 popperPlacement="top-start"
-                popperContainer={(popper) => document.body.appendChild(popper)}
+                portalId="root"
               />
+
               <select
                 name="time"
                 value={meetingData.time}
