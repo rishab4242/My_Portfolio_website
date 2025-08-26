@@ -256,6 +256,8 @@ const CoffeeMeetingBox = () => {
                 minDate={tomorrow}
                 dateFormat="dd/MM/yyyy"
                 customInput={<CustomDateInput />}
+                popperPlacement="top-start"
+                popperContainer={(popper) => document.body.appendChild(popper)}
               />
               <select
                 name="time"
