@@ -400,6 +400,8 @@ const ContactSection = () => {
       label: "WhatsApp",
       url: "https://wa.me/917666938815",
       color: "hover:text-green-400",
+      // Add a custom class to identify the last icon
+      className: "no-slide-bar",
     },
   ];
 
@@ -442,6 +444,18 @@ const ContactSection = () => {
 
         [data-aos="slide-up"] {
           transform: translateY(50px);
+        }
+
+        /* Assume the sliding bar is a pseudo-element or parent effect */
+        .flex-nowrap .p-2.sm\\:p-3:last-child:hover ~ .slide-bar,
+        .flex-nowrap .p-2.sm\\:p-3.no-slide-bar:hover ~ .slide-bar {
+          display: none !important; /* Hide the sliding bar for the last icon */
+        }
+
+        /* If the sliding bar is a sibling pseudo-element */
+        .flex-nowrap .p-2.sm\\:p-3:last-child:hover::after,
+        .flex-nowrap .p-2.sm\\:p-3.no-slide-bar:hover::after {
+          display: none !important;
         }
       `}</style>
 
@@ -552,7 +566,9 @@ const ContactSection = () => {
                     href={social.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`p-2 sm:p-3 bg-gray-800 rounded-xl border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:transform hover:scale-110 hover:-translate-y-1 text-gray-400 flex-shrink-0 ${social.color}`}
+                    className={`p-2 sm:p-3 bg-gray-800 rounded-xl border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:transform hover:scale-100 hover:-translate-y-1 text-gray-400 flex-shrink-0 ${social.color} ${
+                      social.className || ""
+                    }`}
                     title={social.label}
                     data-aos="flip-left"
                     style={{ animationDelay: `${index * 0.05}s` }}

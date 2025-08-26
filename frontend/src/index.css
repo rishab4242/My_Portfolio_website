@@ -34,5 +34,14 @@
   }
 }
 
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+  border: 1px solid white;
+  border-radius: 6px;
+  padding: 2px;
+}
+
+
 
 
