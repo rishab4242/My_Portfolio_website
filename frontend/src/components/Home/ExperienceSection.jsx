@@ -1,7 +1,17 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 const ExperienceSection = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect screen size
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const skills = [
     { text: "React.js & Angular" },
     { text: "Digital Marketing Pages" },
@@ -10,13 +20,49 @@ const ExperienceSection = () => {
     { text: "Bug Testing & Fixes" },
   ];
 
-  // Variants
+  // FadeUp for headings / sections
   const fadeUp = {
     hidden: { opacity: 0, y: 40 },
     visible: (i = 0) => ({
       opacity: 1,
       y: 0,
       transition: { delay: i * 0.2, duration: 0.8, ease: "easeOut" },
+    }),
+  };
+
+  // Mobile-specific skill animation
+  const mobileVariants = {
+    hidden: { opacity: 0, y: 20, scale: 0.95 },
+    visible: (i = 0) => ({
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        delay: i * 0.08,
+        duration: 0.4,
+        ease: "easeOut",
+        type: "spring",
+        stiffness: 100,
+        damping: 15,
+      },
+    }),
+  };
+
+  // Desktop-specific skill animation
+  const desktopVariants = {
+    hidden: { opacity: 0, scale: 0.9, y: 20 },
+    visible: (i = 0) => ({
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: {
+        delay: i * 0.15,
+        duration: 0.6,
+        ease: [0.6, 0.01, 0.2, 0.95],
+        type: "spring",
+        stiffness: 120,
+        damping: 20,
+      },
     }),
   };
 
@@ -90,8 +136,11 @@ const ExperienceSection = () => {
                 {skills.map((skill, index) => (
                   <motion.div
                     key={index}
-                    variants={fadeUp}
-                    custom={2 + index * 0.2}
+                    custom={index}
+                    variants={isMobile ? mobileVariants : desktopVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
                     whileHover={{ scale: 1.1, y: -3 }}
                     className="flex items-center gap-2 bg-gradient-to-r from-gray-800 to-gray-700 px-4 py-2 rounded-full border border-gray-600 hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/30 transition-all cursor-pointer"
                   >

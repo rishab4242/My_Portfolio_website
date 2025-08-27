@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { ExternalLink } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function ProjectsSection() {
   const [isVisible, setIsVisible] = useState(false);
   const [hoveredCard, setHoveredCard] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -19,6 +21,14 @@ export default function ProjectsSection() {
     if (section) observer.observe(section);
 
     return () => observer.disconnect();
+  }, []);
+
+  // detect screen size
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const projects = [
@@ -60,6 +70,42 @@ export default function ProjectsSection() {
     },
   ];
 
+  // Mobile card animation
+  const mobileVariants = {
+    hidden: { opacity: 0, y: 20, scale: 0.95 },
+    visible: (i = 0) => ({
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        delay: i * 0.1,
+        duration: 0.4,
+        ease: "easeOut",
+        type: "spring",
+        stiffness: 100,
+        damping: 15,
+      },
+    }),
+  };
+
+  // Desktop card animation
+  const desktopVariants = {
+    hidden: { opacity: 0, y: 20, scale: 0.9 },
+    visible: (i = 0) => ({
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        delay: i * 0.15,
+        duration: 0.6,
+        ease: [0.6, 0.01, 0.2, 0.95],
+        type: "spring",
+        stiffness: 120,
+        damping: 20,
+      },
+    }),
+  };
+
   return (
     <section
       className="text-white px-4 md:px-16 py-10 scroll-mt-20 overflow-hidden"
@@ -94,23 +140,22 @@ export default function ProjectsSection() {
       {/* Animated Project Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {projects.map((project, idx) => (
-          <div
+          <motion.div
             key={idx}
+            custom={idx}
+            variants={isMobile ? mobileVariants : desktopVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            whileHover={{ scale: 1.05, y: -5 }}
             className={`bg-gray-900 border border-gray-600 rounded-lg p-8 flex flex-col justify-between 
-              transform transition-all duration-700 hover:scale-105 hover:rotate-1 hover:shadow-2xl hover:shadow-blue-500/20
+              transform transition-all duration-700  hover:shadow-2xl hover:shadow-blue-500/20
               ${
                 hoveredCard === idx
                   ? "border-blue-400 bg-gray-800"
                   : "hover:border-blue-400 hover:bg-gray-750"
-              }
-              ${
-                isVisible
-                  ? "translate-y-0 opacity-100"
-                  : "translate-y-20 opacity-0"
-              }
-            `}
+              }`}
             style={{
-              transitionDelay: `${600 + idx * 100}ms`,
               transformStyle: "preserve-3d",
             }}
             onMouseEnter={() => setHoveredCard(idx)}
@@ -161,7 +206,7 @@ export default function ProjectsSection() {
                   Live Demo
                   <ExternalLink
                     size={16}
-                    className={`text-blue-500 transform transition-all duration-300 group-hover:rotate-12 group-hover:scale-110 ${
+                    className={`text-blue-500 transform transition-all duration-300  group-hover:scale-110 ${
                       hoveredCard === idx ? "animate-pulse" : ""
                     }`}
                   />
@@ -180,7 +225,7 @@ export default function ProjectsSection() {
                 GitHub
                 <ExternalLink
                   size={16}
-                  className={`text-purple-500 transform transition-all duration-300 group-hover:rotate-12 group-hover:scale-110 ${
+                  className={`text-purple-500 transform transition-all duration-300  group-hover:scale-110 ${
                     hoveredCard === idx ? "animate-bounce" : ""
                   }`}
                 />
@@ -196,7 +241,7 @@ export default function ProjectsSection() {
                   : "scale-0 opacity-0"
               }`}
             ></div>
-          </div>
+          </motion.div>
         ))}
       </div>
     </section>

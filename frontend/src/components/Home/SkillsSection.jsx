@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FaHtml5,
   FaCss3Alt,
@@ -34,6 +34,15 @@ import {
 
 const SkillsSection = () => {
   const [activeTab, setActiveTab] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect screen size for mobile animations
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const skillsData = [
     {
@@ -129,7 +138,7 @@ const SkillsSection = () => {
     },
   ];
 
-  // Variants
+  // Container variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -147,47 +156,68 @@ const SkillsSection = () => {
     },
   };
 
-  const skillCardVariants = {
-    hidden: { opacity: 0, scale: 0.9, y: 20 },
-    visible: (index) => ({
-      opacity: 1,
-      scale: 1,
-      y: 0,
-      transition: {
-        delay: index * 0.15,
-        duration: 0.6,
-        ease: [0.6, 0.01, 0.2, 0.95],
-        type: "spring",
-        stiffness: 120,
-        damping: 20,
+  const SkillCard = ({ skill, index }) => {
+    // Mobile-specific animation
+    const mobileVariants = {
+      hidden: { opacity: 0, y: 20, scale: 0.95 },
+      visible: {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        transition: {
+          delay: index * 0.08,
+          duration: 0.4,
+          ease: "easeOut",
+          type: "spring",
+          stiffness: 100,
+          damping: 15,
+        },
       },
-    }),
-  };
+    };
 
-  const SkillCard = ({ skill, index }) => (
-    <motion.div
-      custom={index}
-      variants={skillCardVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true }}
-      className="relative bg-gray-900/60 backdrop-blur-sm rounded-xl p-6 shadow-xl border border-gray-700/50"
-    >
-      <div className="relative z-10 flex items-center space-x-4">
-        <motion.div
-          animate={{ scale: [1, 1.05, 1] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          {skill.icon}
-        </motion.div>
-        <h3 className="font-semibold text-white text-lg">{skill.name}</h3>
-      </div>
-    </motion.div>
-  );
+    // Desktop animation
+    const desktopVariants = {
+      hidden: { opacity: 0, scale: 0.9, y: 20 },
+      visible: {
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        transition: {
+          delay: index * 0.15,
+          duration: 0.6,
+          ease: [0.6, 0.01, 0.2, 0.95],
+          type: "spring",
+          stiffness: 120,
+          damping: 20,
+        },
+      },
+    };
+
+    return (
+      <motion.div
+        custom={index}
+        variants={isMobile ? mobileVariants : desktopVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        className="relative bg-gray-900/60 backdrop-blur-sm rounded-xl p-6 shadow-xl border border-gray-700/50"
+      >
+        <div className="relative z-10 flex items-center space-x-4">
+          <motion.div
+            animate={{ scale: [1, 1.05, 1] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            {skill.icon}
+          </motion.div>
+          <h3 className="font-semibold text-white text-lg">{skill.name}</h3>
+        </div>
+      </motion.div>
+    );
+  };
 
   return (
     <section className="py-10 relative overflow-hidden" id="skills">
-      {/* Background */}
+      {/* Background decorative elements */}
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         whileInView={{ opacity: 1, scale: 1 }}
@@ -269,17 +299,11 @@ const SkillsSection = () => {
         </motion.div>
 
         {/* Skill Cards */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {skillsData[activeTab].skills.map((skill, idx) => (
             <SkillCard key={skill.name} skill={skill} index={idx} />
           ))}
-        </motion.div>
+        </div>
 
         {/* Footer Note */}
         <motion.div

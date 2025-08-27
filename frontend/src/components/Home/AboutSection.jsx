@@ -69,14 +69,14 @@ export default function AboutSection() {
           <img
             src="/me1.jpg"
             alt="Section 1"
-            className="w-full h-full object-cover rounded-xl transition-all duration-700 md:group-hover:scale-110 group-hover:brightness-110"
+            className="w-full h-full object-cover rounded-xl transform transition-all duration-1000 ease-out md:group-hover:scale-105 group-hover:brightness-110"
           />
 
           {/* Gradient overlay that appears on hover */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-xl"></div>
 
           {/* Decorative border that glows on hover */}
-          <div className="absolute inset-0 rounded-xl border-2 border-transparent group-hover:border-[#e1a87a]/50 group-hover:shadow-lg group-hover:shadow-[#e1a87a]/20 transition-all duration-500"></div>
+          <div className="absolute inset-0 rounded-xl border-2 border-transparent group-hover:border-[#e1a87a]/50 group-hover:shadow-lg group-hover:shadow-[#e1a87a]/20 transition-all duration-700"></div>
         </motion.div>
 
         {/* Right Text */}

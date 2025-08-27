@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
+import "react-datepicker/dist/react-datepicker.css";
 import {
   Mail,
   Phone,
@@ -14,6 +15,34 @@ import {
   Coffee,
   CheckCircle,
 } from "lucide-react";
+
+// AOS Animation Hook
+const useAOS = () => {
+  useEffect(() => {
+    const animateElements = () => {
+      const elements = document.querySelectorAll("[data-aos]");
+      elements.forEach((element, index) => {
+        const rect = element.getBoundingClientRect();
+        const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+
+        if (isVisible && !element.classList.contains("aos-animate")) {
+          setTimeout(() => {
+            element.classList.add("aos-animate");
+          }, index * 50);
+        }
+      });
+    };
+
+    animateElements();
+    window.addEventListener("scroll", animateElements);
+    window.addEventListener("resize", animateElements);
+
+    return () => {
+      window.removeEventListener("scroll", animateElements);
+      window.removeEventListener("resize", animateElements);
+    };
+  }, []);
+};
 
 const CustomDateInput = React.forwardRef(({ value, onClick }, ref) => (
   <button
@@ -431,6 +460,11 @@ const CoffeeMeetingBox = () => {
 };
 
 const ContactSection = () => {
+  useAOS();
+  const { ref, inView } = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
   const handleResumeDownload = () => {
     const link = document.createElement("a");
     link.href = "/Full Stack Resume.pdf";
@@ -505,95 +539,78 @@ const ContactSection = () => {
       label: "WhatsApp",
       url: "https://wa.me/917666938815",
       color: "hover:text-green-400",
+      className: "no-slide-bar",
     },
   ];
-
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: {
-      opacity: 0,
-      y: 30,
-      scale: 0.95,
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut",
-      },
-    },
-  };
-
-  const headerVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.8,
-        ease: "easeOut",
-      },
-    },
-  };
 
   return (
     <section
       className="bg-black text-white py-10 scroll-mt-20 overflow-hidden"
       id="contact"
     >
+      <style jsx="true">{`
+        [data-aos] {
+          opacity: 0;
+          transform: translateY(20px);
+          transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+        }
+
+        [data-aos].aos-animate {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        [data-aos="fade-up"] {
+          transform: translateY(30px);
+        }
+
+        [data-aos="fade-left"] {
+          transform: translateX(-30px);
+        }
+
+        [data-aos="fade-right"] {
+          transform: translateX(30px);
+        }
+
+        [data-aos="zoom-in"] {
+          transform: scale(0.9);
+        }
+
+        [data-aos="flip-left"] {
+          transform: perspective(2500px) rotateY(-100deg);
+        }
+
+        [data-aos="slide-up"] {
+          transform: translateY(50px);
+        }
+
+        .flex-nowrap .p-2.sm\\:p-3:last-child:hover ~ .slide-bar,
+        .flex-nowrap .p-2.sm\\:p-3.no-slide-bar:hover ~ .slide-bar {
+          display: none !important;
+        }
+
+        .flex-nowrap .p-2.sm\\:p-3:last-child:hover::after,
+        .flex-nowrap .p-2.sm\\:p-3.no-slide-bar:hover::after {
+          display: none !important;
+        }
+      `}</style>
+
       <div className="max-w-7xl mx-auto md:px-6 px-4">
-        {/* Section Header */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-          variants={headerVariants}
-          className="text-center mb-16"
-        >
+        <div className="text-center mb-16" data-aos="fade-up">
           <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white via-gray-300 to-gray-500 bg-clip-text text-transparent">
             Get In Touch
           </h2>
-          <motion.div
-            initial={{ width: 0 }}
-            whileInView={{ width: 96 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            viewport={{ once: true }}
-            className="h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mb-6"
-          ></motion.div>
+          <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mb-6"></div>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
             Ready to bring your ideas to life? Let's collaborate and create
             something amazing together.
           </p>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={containerVariants}
-          className="grid grid-cols-1 md:grid-cols-2 gap-8 mx-auto"
-        >
-          {/* Contact Information */}
-          <motion.div
-            variants={itemVariants}
-            whileHover={{
-              scale: 1.02,
-              transition: { duration: 0.3 },
-            }}
-            className="bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 md:h-80 h-90 flex flex-col"
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mx-auto">
+          <div
+            className="bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 md:h-80 h-90 flex flex-col transform hover:scale-105"
+            data-aos="fade-right"
           >
             <h3 className="text-xl font-semibold mb-6 flex items-center gap-3">
               <Send className="w-6 h-6 text-blue-500" />
@@ -602,35 +619,20 @@ const ContactSection = () => {
 
             <div className="space-y-3 flex-1 flex flex-col justify-center">
               {contactInfo.map((item, index) => (
-                <motion.div
+                <div
                   key={index}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{
-                    duration: 0.5,
-                    delay: index * 0.1,
-                    ease: "easeOut",
-                  }}
-                  viewport={{ once: true }}
                   className="group"
+                  data-aos="slide-up"
+                  style={{ animationDelay: `${index * 0.05}s` }}
                 >
                   {item.link ? (
-                    <motion.a
+                    <a
                       href={item.link}
-                      whileHover={{
-                        x: 8,
-                        scale: 1.02,
-                        transition: { duration: 0.2 },
-                      }}
-                      className="flex items-center gap-4 p-4 rounded-xl hover:bg-gray-800/50 transition-all duration-300"
+                      className="flex items-center gap-4 p-4 rounded-xl hover:bg-gray-800/50 transition-all duration-300 group-hover:transform group-hover:translate-x-2 group-hover:scale-105"
                     >
-                      <motion.div
-                        whileHover={{ rotate: 12, scale: 1.1 }}
-                        transition={{ duration: 0.2 }}
-                        className="text-blue-500 group-hover:text-blue-400 transition-colors"
-                      >
+                      <div className="text-blue-500 group-hover:text-blue-400 transition-colors transform group-hover:rotate-12">
                         {item.icon}
-                      </motion.div>
+                      </div>
                       <div>
                         <p className="text-sm text-gray-400 uppercase tracking-wide">
                           {item.label}
@@ -639,7 +641,7 @@ const ContactSection = () => {
                           {item.value}
                         </p>
                       </div>
-                    </motion.a>
+                    </a>
                   ) : (
                     <div className="flex items-center gap-4 p-4 rounded-xl">
                       <div className="text-blue-500">{item.icon}</div>
@@ -651,121 +653,81 @@ const ContactSection = () => {
                       </div>
                     </div>
                   )}
-                </motion.div>
+                </div>
               ))}
             </div>
-          </motion.div>
+          </div>
 
-          {/* Resume Download */}
-          <motion.div
-            variants={itemVariants}
-            whileHover={{
-              scale: 1.02,
-              transition: { duration: 0.3 },
-            }}
-            className="bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 h-80 flex flex-col justify-center"
+          <div
+            className="bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 h-80 flex flex-col justify-center transform hover:scale-105"
+            data-aos="zoom-in"
           >
             <div className="text-center">
-              <motion.div
-                whileHover={{
-                  rotate: 12,
-                  scale: 1.1,
-                  transition: { duration: 0.3 },
-                }}
-                className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4"
-              >
+              <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 transform transition-all duration-300 hover:rotate-12 hover:scale-110">
                 <Download className="w-8 h-8 text-black" />
-              </motion.div>
+              </div>
 
               <h3 className="text-xl font-semibold mb-3">Download Resume</h3>
               <p className="text-gray-400 mb-6 leading-relaxed text-sm">
                 Get a detailed overview of my skills and experience.
               </p>
 
-              <motion.button
-                whileHover={{
-                  scale: 1.05,
-                  y: -2,
-                  boxShadow: "0 10px 25px rgba(255, 255, 255, 0.1)",
-                }}
-                whileTap={{ scale: 0.95 }}
+              <button
                 onClick={handleResumeDownload}
-                className="inline-flex items-center gap-3 bg-white text-black font-semibold py-4 px-8 rounded-xl transition-all duration-300"
+                className="inline-flex items-center gap-3 bg-white text-black font-semibold py-4 px-8 rounded-xl transition-all duration-300 hover:transform hover:scale-105 hover:bg-gray-200 hover:shadow-lg"
               >
                 <Download className="w-5 h-5" />
                 Download PDF
-              </motion.button>
+              </button>
             </div>
-          </motion.div>
+          </div>
 
-          {/* Social Links */}
-          <motion.div
-            variants={itemVariants}
-            whileHover={{
-              scale: 1.02,
-              transition: { duration: 0.3 },
-            }}
-            className="bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 h-80 flex flex-col justify-center"
+          <div
+            className="bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 h-80 flex flex-col justify-center transform hover:scale-105"
+            data-aos="fade-left"
           >
             <h3 className="text-xl font-semibold mb-6 text-center">
               Connect With Me
             </h3>
 
             <div className="flex flex-col items-center gap-4">
-              <div className="flex flex-wrap gap-3 justify-center">
+              <div className="flex flex-nowrap gap-2 justify-center overflow-x-auto sm:flex-wrap sm:gap-4 md:flex-wrap md:gap-4">
                 {socialLinks.map((social, index) => (
-                  <motion.a
+                  <a
                     key={index}
                     href={social.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{
-                      duration: 0.4,
-                      delay: index * 0.1,
-                      ease: "easeOut",
-                    }}
-                    viewport={{ once: true }}
-                    whileHover={{
-                      scale: 1.1,
-                      y: -3,
-                      transition: { duration: 0.2 },
-                    }}
-                    whileTap={{ scale: 0.95 }}
-                    className={`p-2 sm:p-3 bg-gray-800 rounded-xl border border-gray-700 hover:border-gray-600 transition-all duration-300 text-gray-400 flex-shrink-0 ${social.color}`}
+                    className={`p-2 sm:p-3 bg-gray-800 rounded-xl border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:transform hover:scale-100 hover:-translate-y-1 text-gray-400 flex-shrink-0 ${
+                      social.color
+                    } ${social.className || ""}`}
                     title={social.label}
+                    data-aos="flip-left"
+                    style={{ animationDelay: `${index * 0.05}s` }}
                   >
                     {social.icon}
-                  </motion.a>
+                  </a>
                 ))}
               </div>
               <p className="text-gray-400 text-center text-sm">
                 Follow me on social media for updates.
               </p>
             </div>
-          </motion.div>
+          </div>
 
-          {/* Coffee Meeting Scheduler */}
-          <motion.div
-            variants={itemVariants}
-            whileHover={{
-              scale: 1.02,
-              transition: { duration: 0.3 },
-            }}
-          >
+          <div data-aos="fade-up">
             <CoffeeMeetingBox />
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
 
-      {/* Bottom Section */}
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-        viewport={{ once: true }}
+        ref={ref}
         className="mt-16 border-t border-gray-800 pt-8 text-center max-sm:px-2 max-sm:mb-5"
+        initial={{ opacity: 0, y: 15 }}
+        animate={
+          inView ? { opacity: 1, y: 0, transition: { duration: 0.6 } } : {}
+        }
       >
         <p className="text-gray-500">
           © 2025 <span className="text-white">RISHAB DAKHALE.</span> Developed
