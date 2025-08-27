@@ -1,117 +1,75 @@
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
+import { motion } from "framer-motion";
 
 export default function AboutSection() {
-  const [isVisible, setIsVisible] = useState(false);
-  const [imageScale, setImageScale] = useState(false);
-  const [textVisible, setTextVisible] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const sectionRef = useRef(null);
-  const imageRef = useRef(null);
+  // Variants for smooth animations
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 40 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, ease: "easeOut" },
+    },
+  };
 
-  // Check if device is mobile
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
+  const fadeInLeft = {
+    hidden: { opacity: 0, x: -50 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.8, ease: "easeOut" },
+    },
+  };
 
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  useEffect(() => {
-    // Observer for entire section (image and header)
-    const sectionObserver = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          setImageScale(true);
-        } else {
-          // On mobile, keep image animations visible once triggered
-          if (!isMobile) {
-            setImageScale(false);
-          }
-        }
-      },
-      {
-        threshold: isMobile ? 0.1 : 0.3,
-        rootMargin: isMobile ? "50px 0px" : "0px 0px",
-      }
-    );
-
-    if (sectionRef.current) {
-      sectionObserver.observe(sectionRef.current);
-    }
-
-    // Observer for image bottom (mobile only)
-    let imageBottomObserver;
-    if (isMobile) {
-      imageBottomObserver = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            setTimeout(() => setTextVisible(true), 300);
-          }
-        },
-        {
-          threshold: 1, // Trigger only when the entire image is in view
-          rootMargin: "0px 0px -100px 0px", // Trigger when bottom edge is 100px from viewport bottom
-          triggerOnce: true,
-        }
-      );
-
-      if (imageRef.current) {
-        imageBottomObserver.observe(imageRef.current);
-      }
-    }
-
-    return () => {
-      sectionObserver.disconnect();
-      if (imageBottomObserver) imageBottomObserver.disconnect();
-    };
-  }, [isMobile]);
+  const fadeInRight = {
+    hidden: { opacity: 0, x: 50 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.8, ease: "easeOut" },
+    },
+  };
 
   return (
     <div
       className="bg-black text-white py-10 overflow-hidden relative"
       id="about"
-      ref={sectionRef}
     >
       {/* Main Heading */}
       <div className="text-center py-10">
-        <h2
-          className={`text-5xl font-bold text-white mb-4 transition-all duration-1000 ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-          }`}
+        <motion.h2
+          variants={fadeInUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="text-5xl font-bold text-white mb-4"
         >
           About Me
-        </h2>
-        <div
-          className={`w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full transition-all duration-1200 delay-500 ${
-            isVisible ? "opacity-100 scale-100" : "opacity-0 scale-0"
-          }`}
-        ></div>
+        </motion.h2>
+        <motion.div
+          variants={fadeInUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          transition={{ delay: 0.2 }}
+          className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"
+        />
       </div>
 
       {/* Section 1 */}
       <div className="grid grid-cols-1 md:grid-cols-2 md:gap-20 gap-15 items-center px-4 md:px-16 py-5">
         {/* Left Image */}
-        <div
-          ref={imageRef}
-          className={`w-full h-full bg-gray-900 md:w-[550px] rounded-xl shadow-lg relative overflow-hidden group transition-all duration-1000 ${
-            isMobile ? "delay-700" : "delay-500"
-          } ${
-            isVisible
-              ? "opacity-100 translate-x-0"
-              : "opacity-0 -translate-x-16"
-          }`}
+        <motion.div
+          variants={fadeInLeft}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="w-full h-full bg-gray-900 md:w-[550px] rounded-xl shadow-lg relative overflow-hidden group"
         >
-          {/* Image with scale animation based on section visibility */}
           <img
             src="/me1.jpg"
             alt="Section 1"
-            className={`w-full h-full object-cover rounded-xl transition-all duration-700 md:group-hover:scale-110 group-hover:brightness-110 ${
-              imageScale ? "md:scale-105" : "md:scale-100"
-            }`}
+            className="w-full h-full object-cover rounded-xl transition-all duration-700 md:group-hover:scale-110 group-hover:brightness-110"
           />
 
           {/* Gradient overlay that appears on hover */}
@@ -119,29 +77,20 @@ export default function AboutSection() {
 
           {/* Decorative border that glows on hover */}
           <div className="absolute inset-0 rounded-xl border-2 border-transparent group-hover:border-[#e1a87a]/50 group-hover:shadow-lg group-hover:shadow-[#e1a87a]/20 transition-all duration-500"></div>
-        </div>
+        </motion.div>
 
         {/* Right Text */}
-        <div
-          className={`space-y-6 space-x-6 transition-all ${
-            isMobile ? "duration-600 delay-800" : "duration-1000 delay-700"
-          } ${
-            isMobile
-              ? textVisible
-                ? "opacity-100 translate-x-0"
-                : "opacity-0 translate-x-16"
-              : isVisible
-              ? "opacity-100 translate-x-0"
-              : "opacity-0 translate-x-16"
-          }`}
+        <motion.div
+          variants={fadeInRight}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="space-y-6 space-x-6"
         >
           <h3 className="uppercase text-3xl tracking-wider font-semibold text-white leading-tight relative">
             <span className="bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
               Passionate Full Stack Developer Ready to Make an Impact
             </span>
-
-            {/* Decorative element */}
-            <div className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#e1a87a] to-transparent transition-all duration-1000 delay-1500 hover:w-full"></div>
           </h3>
 
           <div className="relative">
@@ -163,7 +112,14 @@ export default function AboutSection() {
             <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/5 to-purple-500/5 rounded-lg opacity-0 hover:opacity-100 transition-opacity duration-500 -z-10"></div>
           </div>
 
-          <div className="relative inline-block group">
+          <motion.div
+            variants={fadeInUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            transition={{ delay: 0.4 }}
+            className="relative inline-block group"
+          >
             <a
               href="#projects"
               className="relative inline-block px-8 py-4 border-2 border-[#e1a87a] text-white rounded-md bg-transparent overflow-hidden transition-all duration-300 hover:text-black hover:scale-105 hover:shadow-lg hover:shadow-[#e1a87a]/25 group"
@@ -179,10 +135,8 @@ export default function AboutSection() {
                 </span>
               </span>
             </a>
-
-            
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
 
       {/* Background decorative elements */}

@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { motion } from "framer-motion";
 import {
   Mail,
   Phone,
@@ -13,34 +14,6 @@ import {
   Coffee,
   CheckCircle,
 } from "lucide-react";
-
-// AOS Animation Hook
-const useAOS = () => {
-  useEffect(() => {
-    const animateElements = () => {
-      const elements = document.querySelectorAll("[data-aos]");
-      elements.forEach((element, index) => {
-        const rect = element.getBoundingClientRect();
-        const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
-
-        if (isVisible && !element.classList.contains("aos-animate")) {
-          setTimeout(() => {
-            element.classList.add("aos-animate");
-          }, index * 50); // Reduced stagger delay from 100ms to 50ms
-        }
-      });
-    };
-
-    animateElements();
-    window.addEventListener("scroll", animateElements);
-    window.addEventListener("resize", animateElements);
-
-    return () => {
-      window.removeEventListener("scroll", animateElements);
-      window.removeEventListener("resize", animateElements);
-    };
-  }, []);
-};
 
 const CustomDateInput = React.forwardRef(({ value, onClick }, ref) => (
   <button
@@ -67,20 +40,46 @@ const CoffeeMeetingBox = () => {
     location: "cafe",
     message: "",
   });
+  const [errors, setErrors] = useState({});
 
   const handleInputChange = (e) => {
     setMeetingData({
       ...meetingData,
       [e.target.name]: e.target.value,
     });
+    setErrors({ ...errors, [e.target.name]: "" });
   };
 
   const handleDateChange = (date) => {
     setMeetingData({ ...meetingData, date });
+    setErrors({ ...errors, date: "" });
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!meetingData.name.trim()) newErrors.name = "Name is required";
+    if (!meetingData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(meetingData.email)
+    ) {
+      newErrors.email = "Invalid email address";
+    }
+    if (!meetingData.phone.trim()) {
+      newErrors.phone = "Phone number is required";
+    } else if (!/^\d{10}$/.test(meetingData.phone.trim())) {
+      newErrors.phone = "Invalid phone number";
+    }
+    if (!meetingData.time) newErrors.time = "Please select a time";
+    if (!meetingData.date) newErrors.date = "Please select a date";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return; // Validation check
+
     setIsSubmitting(true);
 
     try {
@@ -163,13 +162,34 @@ const CoffeeMeetingBox = () => {
 
   if (isScheduled) {
     return (
-      <div className="bg-gradient-to-br from-green-900/20 to-blue-900/20 backdrop-blur-sm rounded-2xl p-6 border border-green-800/30 h-80 flex flex-col justify-center items-center text-center">
-        <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4 animate-bounce">
+      <motion.div
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="bg-gradient-to-br from-green-900/20 to-blue-900/20 backdrop-blur-sm rounded-2xl p-6 border border-green-800/30 h-80 flex flex-col justify-center items-center text-center"
+      >
+        <motion.div
+          animate={{
+            y: [0, -10, 0],
+            scale: [1, 1.1, 1],
+          }}
+          transition={{
+            duration: 1.5,
+            repeat: Infinity,
+            repeatType: "reverse",
+            ease: "easeInOut",
+          }}
+          className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4"
+        >
           <CheckCircle className="w-8 h-8 text-green-500" />
-        </div>
-        <h3 className="text-xl font-semibold text-green-400 mb-2 animate-pulse">
+        </motion.div>
+        <motion.h3
+          animate={{ opacity: [1, 0.7, 1] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          className="text-xl font-semibold text-green-400 mb-2"
+        >
           Meeting Scheduled!
-        </h3>
+        </motion.h3>
         <p className="text-gray-400 text-sm mb-4">
           I've received your meeting request and will confirm the details via
           email shortly.
@@ -177,105 +197,164 @@ const CoffeeMeetingBox = () => {
         <p className="text-green-300 text-xs">
           Check your email for confirmation ✨
         </p>
-      </div>
+      </motion.div>
     );
   }
 
   return (
     <div className="bg-gradient-to-br from-orange-900/20 to-yellow-900/20 backdrop-blur-sm rounded-2xl p-6 border border-orange-800/30 h-80 flex flex-col">
       {!showForm ? (
-        <div className="flex flex-col justify-center items-center h-full text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-yellow-600 rounded-full flex items-center justify-center mb-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="flex flex-col justify-center items-center h-full text-center"
+        >
+          <motion.div
+            whileHover={{
+              scale: 1.1,
+              rotate: [0, -10, 10, 0],
+              transition: { duration: 0.3 },
+            }}
+            className="w-16 h-16 bg-gradient-to-br from-orange-500 to-yellow-600 rounded-full flex items-center justify-center mb-4"
+          >
             <Coffee className="w-8 h-8 text-white" />
-          </div>
+          </motion.div>
           <h3 className="text-xl font-semibold mb-2">
             Schedule a Coffee Meeting
           </h3>
           <p className="text-gray-400 text-sm mb-4">
             Let's discuss your project over a cup of coffee!
           </p>
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => setShowForm(true)}
             className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-600 to-yellow-600 text-white font-semibold py-2 px-4 rounded-lg text-sm"
           >
             <Calendar className="w-4 h-4" />
             Book Now
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
       ) : (
-        <div className="flex flex-col h-full overflow-x-hidden px-2 pt-2">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="flex flex-col h-full overflow-x-hidden px-2 pt-2"
+        >
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold flex items-center gap-2">
               <Coffee className="w-5 h-5 text-orange-500" />
               Schedule Coffee Meeting
             </h3>
-            <button
+            <motion.button
+              whileHover={{ scale: 1.1, rotate: 90 }}
+              whileTap={{ scale: 0.9 }}
               type="button"
-              onClick={() => setShowForm(false)}
+              onClick={() => {
+                setShowForm(false); // form close
+                setMeetingData({
+                  // form reset
+                  name: "",
+                  email: "",
+                  phone: "",
+                  date: new Date(),
+                  time: "",
+                  location: "cafe",
+                  message: "",
+                });
+                setErrors({}); // errors clear
+              }}
               className="text-gray-400 hover:text-white"
             >
               ✕
-            </button>
+            </motion.button>
           </div>
           <div className="flex-1 overflow-y-auto space-y-3 pr-2 px-2 pt-2">
             {/* Name + Email */}
             <div className="grid grid-cols-2 gap-2">
-              <input
-                type="text"
-                name="name"
-                placeholder="Your Name"
-                value={meetingData.name}
-                onChange={handleInputChange}
-                className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white text-xs box-border"
-              />
+              <div className="flex flex-col">
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Your Name"
+                  value={meetingData.name}
+                  onChange={handleInputChange}
+                  className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white text-xs box-border"
+                />
+                {errors.name && (
+                  <p className="text-red-500 text-xs mt-1">{errors.name}</p>
+                )}
+              </div>
 
-              <input
-                type="email"
-                name="email"
-                placeholder="Your Email"
-                value={meetingData.email}
-                onChange={handleInputChange}
-                className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white text-xs"
-              />
+              <div className="flex flex-col">
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Your Email"
+                  value={meetingData.email}
+                  onChange={handleInputChange}
+                  className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white text-xs"
+                />
+                {errors.email && (
+                  <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+                )}
+              </div>
             </div>
 
             {/* Phone */}
-            <input
-              type="tel"
-              name="phone"
-              placeholder="Phone Number"
-              value={meetingData.phone}
-              onChange={handleInputChange}
-              className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white text-xs"
-            />
+            <div className="flex flex-col">
+              <input
+                type="tel"
+                name="phone"
+                placeholder="Phone Number"
+                value={meetingData.phone}
+                onChange={handleInputChange}
+                className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white text-xs"
+              />
+              {errors.phone && (
+                <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
+              )}
+            </div>
 
             {/* Date + Time */}
             <div className="grid grid-cols-2 gap-2">
-              <DatePicker
-                selected={meetingData.date}
-                onChange={handleDateChange}
-                minDate={tomorrow}
-                dateFormat="dd/MM/yyyy"
-                customInput={<CustomDateInput />}
-                popperPlacement="top-start"
-                portalId="root"
-              />
+              <div className="flex flex-col">
+                <DatePicker
+                  selected={meetingData.date}
+                  onChange={handleDateChange}
+                  minDate={tomorrow}
+                  dateFormat="dd/MM/yyyy"
+                  customInput={<CustomDateInput />}
+                  popperPlacement="top-start"
+                  portalId="root"
+                />
+                {errors.date && (
+                  <p className="text-red-500 text-xs mt-1">{errors.date}</p>
+                )}
+              </div>
 
-              <select
-                name="time"
-                value={meetingData.time}
-                onChange={handleInputChange}
-                className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white text-xs"
-              >
-                <option value="" disabled>
-                  Select Time
-                </option>
-                {timeSlots.map((slot, i) => (
-                  <option key={i} value={slot}>
-                    {slot}
+              <div className="flex flex-col">
+                <select
+                  name="time"
+                  value={meetingData.time}
+                  onChange={handleInputChange}
+                  className="w-full px-2 py-1.5 bg-gray-800/50 border border-gray-700 rounded text-white text-xs"
+                >
+                  <option value="" disabled>
+                    Select Time
                   </option>
-                ))}
-              </select>
+                  {timeSlots.map((slot, i) => (
+                    <option key={i} value={slot}>
+                      {slot}
+                    </option>
+                  ))}
+                </select>
+                {errors.time && (
+                  <p className="text-red-500 text-xs mt-1">{errors.time}</p>
+                )}
+              </div>
             </div>
 
             {/* Location */}
@@ -304,7 +383,9 @@ const CoffeeMeetingBox = () => {
           </div>
 
           {/* Submit button */}
-          <button
+          <motion.button
+            whileHover={{ scale: 1.02, y: -1 }}
+            whileTap={{ scale: 0.98 }}
             onClick={handleSubmit}
             disabled={isSubmitting}
             className={`mt-4 inline-flex items-center gap-2 justify-center bg-gradient-to-r from-orange-600 to-yellow-600 text-white font-semibold py-2 px-4 rounded-lg text-sm ${
@@ -313,8 +394,10 @@ const CoffeeMeetingBox = () => {
           >
             {isSubmitting ? (
               <>
-                <svg
-                  className="animate-spin w-4 h-4"
+                <motion.svg
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  className="w-4 h-4"
                   fill="none"
                   viewBox="0 0 24 24"
                 >
@@ -331,7 +414,7 @@ const CoffeeMeetingBox = () => {
                     fill="currentColor"
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   ></path>
-                </svg>
+                </motion.svg>
                 Scheduling...
               </>
             ) : (
@@ -340,16 +423,14 @@ const CoffeeMeetingBox = () => {
                 Schedule Meeting
               </>
             )}
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
       )}
     </div>
   );
 };
 
 const ContactSection = () => {
-  useAOS();
-
   const handleResumeDownload = () => {
     const link = document.createElement("a");
     link.href = "/Full Stack Resume.pdf";
@@ -424,83 +505,95 @@ const ContactSection = () => {
       label: "WhatsApp",
       url: "https://wa.me/917666938815",
       color: "hover:text-green-400",
-      // Add a custom class to identify the last icon
-      className: "no-slide-bar",
     },
   ];
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+        delayChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: {
+      opacity: 0,
+      y: 30,
+      scale: 0.95,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut",
+      },
+    },
+  };
+
+  const headerVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+        ease: "easeOut",
+      },
+    },
+  };
 
   return (
     <section
       className="bg-black text-white py-10 scroll-mt-20 overflow-hidden"
       id="contact"
     >
-      <style jsx="true">{`
-        [data-aos] {
-          opacity: 0;
-          transform: translateY(20px);
-          transition: opacity 0.4s ease-out, transform 0.4s ease-out;
-        }
-
-        [data-aos].aos-animate {
-          opacity: 1;
-          transform: translateY(0);
-        }
-
-        [data-aos="fade-up"] {
-          transform: translateY(30px);
-        }
-
-        [data-aos="fade-left"] {
-          transform: translateX(-30px);
-        }
-
-        [data-aos="fade-right"] {
-          transform: translateX(30px);
-        }
-
-        [data-aos="zoom-in"] {
-          transform: scale(0.9);
-        }
-
-        [data-aos="flip-left"] {
-          transform: perspective(2500px) rotateY(-100deg);
-        }
-
-        [data-aos="slide-up"] {
-          transform: translateY(50px);
-        }
-
-        /* Assume the sliding bar is a pseudo-element or parent effect */
-        .flex-nowrap .p-2.sm\\:p-3:last-child:hover ~ .slide-bar,
-        .flex-nowrap .p-2.sm\\:p-3.no-slide-bar:hover ~ .slide-bar {
-          display: none !important; /* Hide the sliding bar for the last icon */
-        }
-
-        /* If the sliding bar is a sibling pseudo-element */
-        .flex-nowrap .p-2.sm\\:p-3:last-child:hover::after,
-        .flex-nowrap .p-2.sm\\:p-3.no-slide-bar:hover::after {
-          display: none !important;
-        }
-      `}</style>
-
       <div className="max-w-7xl mx-auto md:px-6 px-4">
         {/* Section Header */}
-        <div className="text-center mb-16" data-aos="fade-up">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={headerVariants}
+          className="text-center mb-16"
+        >
           <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white via-gray-300 to-gray-500 bg-clip-text text-transparent">
             Get In Touch
           </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mb-6"></div>
+          <motion.div
+            initial={{ width: 0 }}
+            whileInView={{ width: 96 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mb-6"
+          ></motion.div>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
             Ready to bring your ideas to life? Let's collaborate and create
             something amazing together.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mx-auto">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={containerVariants}
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 mx-auto"
+        >
           {/* Contact Information */}
-          <div
-            className="bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 md:h-80 h-90 flex flex-col transform hover:scale-105"
-            data-aos="fade-right"
+          <motion.div
+            variants={itemVariants}
+            whileHover={{
+              scale: 1.02,
+              transition: { duration: 0.3 },
+            }}
+            className="bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 md:h-80 h-90 flex flex-col"
           >
             <h3 className="text-xl font-semibold mb-6 flex items-center gap-3">
               <Send className="w-6 h-6 text-blue-500" />
@@ -509,20 +602,35 @@ const ContactSection = () => {
 
             <div className="space-y-3 flex-1 flex flex-col justify-center">
               {contactInfo.map((item, index) => (
-                <div
+                <motion.div
                   key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{
+                    duration: 0.5,
+                    delay: index * 0.1,
+                    ease: "easeOut",
+                  }}
+                  viewport={{ once: true }}
                   className="group"
-                  data-aos="slide-up"
-                  style={{ animationDelay: `${index * 0.05}s` }}
                 >
                   {item.link ? (
-                    <a
+                    <motion.a
                       href={item.link}
-                      className="flex items-center gap-4 p-4 rounded-xl hover:bg-gray-800/50 transition-all duration-300 group-hover:transform group-hover:translate-x-2 group-hover:scale-105"
+                      whileHover={{
+                        x: 8,
+                        scale: 1.02,
+                        transition: { duration: 0.2 },
+                      }}
+                      className="flex items-center gap-4 p-4 rounded-xl hover:bg-gray-800/50 transition-all duration-300"
                     >
-                      <div className="text-blue-500 group-hover:text-blue-400 transition-colors transform group-hover:rotate-12">
+                      <motion.div
+                        whileHover={{ rotate: 12, scale: 1.1 }}
+                        transition={{ duration: 0.2 }}
+                        className="text-blue-500 group-hover:text-blue-400 transition-colors"
+                      >
                         {item.icon}
-                      </div>
+                      </motion.div>
                       <div>
                         <p className="text-sm text-gray-400 uppercase tracking-wide">
                           {item.label}
@@ -531,7 +639,7 @@ const ContactSection = () => {
                           {item.value}
                         </p>
                       </div>
-                    </a>
+                    </motion.a>
                   ) : (
                     <div className="flex items-center gap-4 p-4 rounded-xl">
                       <div className="text-blue-500">{item.icon}</div>
@@ -543,87 +651,127 @@ const ContactSection = () => {
                       </div>
                     </div>
                   )}
-                </div>
+                </motion.div>
               ))}
             </div>
-          </div>
+          </motion.div>
 
           {/* Resume Download */}
-          <div
-            className="bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 h-80 flex flex-col justify-center transform hover:scale-105"
-            data-aos="zoom-in"
+          <motion.div
+            variants={itemVariants}
+            whileHover={{
+              scale: 1.02,
+              transition: { duration: 0.3 },
+            }}
+            className="bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 h-80 flex flex-col justify-center"
           >
             <div className="text-center">
-              <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 transform transition-all duration-300 hover:rotate-12 hover:scale-110">
+              <motion.div
+                whileHover={{
+                  rotate: 12,
+                  scale: 1.1,
+                  transition: { duration: 0.3 },
+                }}
+                className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4"
+              >
                 <Download className="w-8 h-8 text-black" />
-              </div>
+              </motion.div>
 
               <h3 className="text-xl font-semibold mb-3">Download Resume</h3>
               <p className="text-gray-400 mb-6 leading-relaxed text-sm">
                 Get a detailed overview of my skills and experience.
               </p>
 
-              <button
+              <motion.button
+                whileHover={{
+                  scale: 1.05,
+                  y: -2,
+                  boxShadow: "0 10px 25px rgba(255, 255, 255, 0.1)",
+                }}
+                whileTap={{ scale: 0.95 }}
                 onClick={handleResumeDownload}
-                className="inline-flex items-center gap-3 bg-white text-black font-semibold py-4 px-8 rounded-xl transition-all duration-300 hover:transform hover:scale-105 hover:bg-gray-200 hover:shadow-lg"
+                className="inline-flex items-center gap-3 bg-white text-black font-semibold py-4 px-8 rounded-xl transition-all duration-300"
               >
                 <Download className="w-5 h-5" />
                 Download PDF
-              </button>
+              </motion.button>
             </div>
-          </div>
+          </motion.div>
 
           {/* Social Links */}
-          <div
-            className="bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 h-80 flex flex-col justify-center transform hover:scale-105"
-            data-aos="fade-left"
+          <motion.div
+            variants={itemVariants}
+            whileHover={{
+              scale: 1.02,
+              transition: { duration: 0.3 },
+            }}
+            className="bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 h-80 flex flex-col justify-center"
           >
             <h3 className="text-xl font-semibold mb-6 text-center">
               Connect With Me
             </h3>
 
             <div className="flex flex-col items-center gap-4">
-              <div className="flex flex-nowrap gap-2 justify-center overflow-x-auto sm:flex-wrap sm:gap-4 md:flex-wrap md:gap-4">
+              <div className="flex flex-wrap gap-3 justify-center">
                 {socialLinks.map((social, index) => (
-                  <a
+                  <motion.a
                     key={index}
                     href={social.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`p-2 sm:p-3 bg-gray-800 rounded-xl border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:transform hover:scale-100 hover:-translate-y-1 text-gray-400 flex-shrink-0 ${
-                      social.color
-                    } ${social.className || ""}`}
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{
+                      duration: 0.4,
+                      delay: index * 0.1,
+                      ease: "easeOut",
+                    }}
+                    viewport={{ once: true }}
+                    whileHover={{
+                      scale: 1.1,
+                      y: -3,
+                      transition: { duration: 0.2 },
+                    }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`p-2 sm:p-3 bg-gray-800 rounded-xl border border-gray-700 hover:border-gray-600 transition-all duration-300 text-gray-400 flex-shrink-0 ${social.color}`}
                     title={social.label}
-                    data-aos="flip-left"
-                    style={{ animationDelay: `${index * 0.05}s` }}
                   >
                     {social.icon}
-                  </a>
+                  </motion.a>
                 ))}
               </div>
               <p className="text-gray-400 text-center text-sm">
                 Follow me on social media for updates.
               </p>
             </div>
-          </div>
+          </motion.div>
 
           {/* Coffee Meeting Scheduler */}
-          <div data-aos="fade-up">
+          <motion.div
+            variants={itemVariants}
+            whileHover={{
+              scale: 1.02,
+              transition: { duration: 0.3 },
+            }}
+          >
             <CoffeeMeetingBox />
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
 
       {/* Bottom Section */}
-      <div
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        viewport={{ once: true }}
         className="mt-16 border-t border-gray-800 pt-8 text-center max-sm:px-2 max-sm:mb-5"
-        data-aos="fade-up"
       >
         <p className="text-gray-500">
           © 2025 <span className="text-white">RISHAB DAKHALE.</span> Developed
           with passion using modern web technologies. All rights reserved.
         </p>
-      </div>
+      </motion.div>
     </section>
   );
 };

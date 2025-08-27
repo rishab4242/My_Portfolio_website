@@ -1,6 +1,27 @@
 import React, { useState } from "react";
+import {
+  FaHtml5,
+  FaCss3Alt,
+  FaReact,
+  FaBootstrap,
+  FaNodeJs,
+  FaGitAlt,
+  FaPuzzlePiece,
+  FaUsers,
+  FaComments,
+  FaStar,
+} from "react-icons/fa";
+import { VscCode } from "react-icons/vsc";
+import {
+  SiJavascript,
+  SiRedux,
+  SiTailwindcss,
+  SiExpress,
+  SiMongodb,
+  SiMysql,
+  SiGithub,
+} from "react-icons/si";
 import { motion } from "framer-motion";
-import { useInView } from "react-intersection-observer";
 import {
   Globe,
   Code2,
@@ -13,15 +34,6 @@ import {
 
 const SkillsSection = () => {
   const [activeTab, setActiveTab] = useState(0);
-  const [hoveredSkill, setHoveredSkill] = useState(null);
-  const { ref: sectionRef, inView: sectionInView } = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-  });
-  const { ref: skillsRef, inView: skillsInView } = useInView({
-    triggerOnce: true,
-    threshold: window.innerWidth < 768 ? 0.3 : 0.2,
-  });
 
   const skillsData = [
     {
@@ -29,13 +41,31 @@ const SkillsSection = () => {
       icon: <Globe className="w-5 h-5" />,
       gradient: "from-blue-500 via-cyan-500 to-blue-600",
       skills: [
-        { name: "HTML", icon: "🏗️" },
-        { name: "CSS", icon: "🎨" },
-        { name: "JavaScript", icon: "⚡" },
-        { name: "React.js", icon: "⚛️" },
-        { name: "Redux Toolkit", icon: "🔄" },
-        { name: "Bootstrap", icon: "📱" },
-        { name: "Tailwind CSS", icon: "💨" },
+        {
+          name: "HTML",
+          icon: <FaHtml5 className="text-orange-600 text-3xl" />,
+        },
+        { name: "CSS", icon: <FaCss3Alt className="text-blue-600 text-3xl" /> },
+        {
+          name: "JavaScript",
+          icon: <SiJavascript className="text-yellow-500 text-3xl" />,
+        },
+        {
+          name: "React.js",
+          icon: <FaReact className="text-cyan-400 text-3xl" />,
+        },
+        {
+          name: "Redux Toolkit",
+          icon: <SiRedux className="text-purple-600 text-3xl" />,
+        },
+        {
+          name: "Bootstrap",
+          icon: <FaBootstrap className="text-violet-600 text-3xl" />,
+        },
+        {
+          name: "Tailwind CSS",
+          icon: <SiTailwindcss className="text-sky-400 text-3xl" />,
+        },
       ],
     },
     {
@@ -43,8 +73,14 @@ const SkillsSection = () => {
       icon: <Code2 className="w-5 h-5" />,
       gradient: "from-green-500 via-emerald-500 to-green-600",
       skills: [
-        { name: "Node.js", icon: "🟢" },
-        { name: "Express.js", icon: "🚀" },
+        {
+          name: "Node.js",
+          icon: <FaNodeJs className="text-green-600 text-3xl" />,
+        },
+        {
+          name: "Express.js",
+          icon: <SiExpress className="text-gray-700 text-3xl" />,
+        },
       ],
     },
     {
@@ -52,11 +88,20 @@ const SkillsSection = () => {
       icon: <Database className="w-5 h-5" />,
       gradient: "from-orange-500 via-red-500 to-orange-600",
       skills: [
-        { name: "MongoDB", icon: "🍃" },
-        { name: "MySQL", icon: "🐬" },
-        { name: "Git", icon: "📝" },
-        { name: "GitHub", icon: "🐙" },
-        { name: "VS Code", icon: "💻" },
+        {
+          name: "MongoDB",
+          icon: <SiMongodb className="text-green-500 text-3xl" />,
+        },
+        { name: "MySQL", icon: <SiMysql className="text-blue-500 text-3xl" /> },
+        {
+          name: "Git",
+          icon: <FaGitAlt className="text-orange-500 text-3xl" />,
+        },
+        { name: "GitHub", icon: <SiGithub className="text-black text-3xl" /> },
+        {
+          name: "VS Code",
+          icon: <VscCode className="text-blue-600 text-3xl" />,
+        },
       ],
     },
     {
@@ -64,35 +109,41 @@ const SkillsSection = () => {
       icon: <Users className="w-5 h-5" />,
       gradient: "from-purple-500 via-pink-500 to-purple-600",
       skills: [
-        { name: "Problem Solving", icon: "🧩" },
-        { name: "Teamwork", icon: "🤝" },
-        { name: "Communication", icon: "💬" },
-        { name: "Adaptability", icon: "🌟" },
+        {
+          name: "Problem Solving",
+          icon: <FaPuzzlePiece className="text-indigo-600 text-3xl" />,
+        },
+        {
+          name: "Teamwork",
+          icon: <FaUsers className="text-green-600 text-3xl" />,
+        },
+        {
+          name: "Communication",
+          icon: <FaComments className="text-blue-500 text-3xl" />,
+        },
+        {
+          name: "Adaptability",
+          icon: <FaStar className="text-yellow-500 text-3xl" />,
+        },
       ],
     },
   ];
 
+  // Variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.3,
-      },
+      transition: { staggerChildren: 0.1, delayChildren: 0.2 },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 30, scale: 0.9 },
+    hidden: { opacity: 0, y: 30 },
     visible: {
       opacity: 1,
       y: 0,
-      scale: 1,
-      transition: {
-        duration: 0.8,
-        ease: "easeOut",
-      },
+      transition: { duration: 0.7, ease: "easeOut" },
     },
   };
 
@@ -103,180 +154,75 @@ const SkillsSection = () => {
       scale: 1,
       y: 0,
       transition: {
-        delay: index * 0.2, // Increased delay for sequential reveal
-        duration: 0.6, // Slightly longer duration for smoother effect
-        ease: [0.6, 0.01, 0.2, 0.95], // Custom cubic-bezier for smooth easing
-        type: "spring", // Spring animation for natural bounce
-        stiffness: 100,
+        delay: index * 0.15,
+        duration: 0.6,
+        ease: [0.6, 0.01, 0.2, 0.95],
+        type: "spring",
+        stiffness: 120,
         damping: 20,
       },
     }),
   };
 
-  const iconVariants = {
-    initial: { scale: 1, rotate: 0 },
-    pulse: {
-      scale: [1, 1.05, 1],
-      opacity: [1, 0.8, 1],
-      transition: {
-        duration: 3,
-        repeat: Infinity,
-        ease: "easeInOut",
-      },
-    },
-  };
-
-  const sparkleVariants = {
-    initial: { opacity: 0, scale: 0.8, rotate: 0 },
-    animate: {
-      opacity: [0, 1, 0],
-      scale: [0.8, 1.2, 0.8],
-      rotate: [0, 180, 360],
-      transition: {
-        duration: 2,
-        repeat: Infinity,
-        ease: "easeInOut",
-      },
-    },
-  };
-
-  const floatingParticleVariants = {
-    initial: { y: 0, opacity: 0 },
-    animate: {
-      y: [-8, 0, -8],
-      opacity: [0, 0.2, 0],
-      transition: {
-        duration: 3,
-        repeat: Infinity,
-        ease: "easeInOut",
-      },
-    },
-  };
-
-  const backgroundVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: {
-        duration: 1,
-        ease: "easeOut",
-      },
-    },
-  };
-
-  const tabVariants = {
-    inactive: { scale: 1, backgroundColor: "rgba(0, 0, 0, 0)" },
-    active: {
-      scale: 1.05,
-      transition: { duration: 0.3, ease: "easeInOut" },
-    },
-    hover: {
-      scale: 1.02,
-      backgroundColor: "rgba(55, 65, 81, 0.5)",
-      transition: { duration: 0.2 },
-    },
-  };
-
-  const SkillCard = ({ skill, index, categoryGradient }) => (
+  const SkillCard = ({ skill, index }) => (
     <motion.div
       custom={index}
-      initial="hidden"
-      animate={skillsInView ? "visible" : "hidden"}
       variants={skillCardVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
       className="relative bg-gray-900/60 backdrop-blur-sm rounded-xl p-6 shadow-xl border border-gray-700/50"
     >
-      <div className="relative z-10">
-        <div className="flex items-center space-x-4">
-          <motion.div
-            variants={iconVariants}
-            initial="initial"
-            animate="pulse"
-            className="text-3xl drop-shadow-lg"
-          >
-            {skill.icon}
-          </motion.div>
-          <h3 className="font-semibold text-white text-lg">{skill.name}</h3>
-        </div>
+      <div className="relative z-10 flex items-center space-x-4">
         <motion.div
-          variants={sparkleVariants}
-          initial="initial"
-          animate="animate"
-          className="absolute top-3 right-3"
+          animate={{ scale: [1, 1.05, 1] }}
+          transition={{ duration: 2, repeat: Infinity }}
         >
-          <Sparkles className="w-4 h-4 text-yellow-400 drop-shadow-sm" />
+          {skill.icon}
         </motion.div>
-        <motion.div
-          variants={floatingParticleVariants}
-          initial="initial"
-          animate="animate"
-          className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full blur-md"
-        />
+        <h3 className="font-semibold text-white text-lg">{skill.name}</h3>
       </div>
     </motion.div>
   );
 
-  // Dynamic margin-top based on number of skills for mobile
-  const getDynamicMargin = () => {
-    const skillCount = skillsData[activeTab].skills.length;
-    if (window.innerWidth < 768) {
-      if (skillCount >= 5) return "mt-14";
-      if (skillCount >= 3) return "mt-10";
-      return "mt-8";
-    }
-    return "mt-10";
-  };
-
   return (
-    <section
-      ref={sectionRef}
-      className="py-10 relative overflow-hidden"
-      id="skills"
-    >
-      <div className="absolute inset-0 overflow-hidden">
-        <motion.div
-          variants={backgroundVariants}
-          initial="hidden"
-          animate={sectionInView ? "visible" : "hidden"}
-          transition={{ delay: 0.5 }}
-          className="absolute -top-4 -right-4 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl"
-        />
-        <motion.div
-          variants={backgroundVariants}
-          initial="hidden"
-          animate={sectionInView ? "visible" : "hidden"}
-          transition={{ delay: 0.7 }}
-          className="absolute -bottom-4 -left-4 w-72 h-72 bg-purple-500/5 rounded-full blur-3xl"
-        />
-      </div>
+    <section className="py-10 relative overflow-hidden" id="skills">
+      {/* Background */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1 }}
+        className="absolute -top-4 -right-4 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl"
+      />
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1, delay: 0.3 }}
+        className="absolute -bottom-4 -left-4 w-72 h-72 bg-purple-500/5 rounded-full blur-3xl"
+      />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Heading */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
-          animate={sectionInView ? "visible" : "hidden"}
+          whileInView="visible"
+          viewport={{ once: true }}
           className="text-center mb-16"
         >
           <motion.div
             variants={itemVariants}
             className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-700 text-white px-6 py-3 rounded-full mb-6 shadow-xl"
           >
-            <motion.div
-              whileHover={{ rotate: 360 }}
-              transition={{ duration: 0.5 }}
-            >
-              <Star className="w-5 h-5" />
-            </motion.div>
+            <Star className="w-5 h-5" />
             <span className="font-bold text-sm tracking-wide">
               SKILLS & EXPERTISE
             </span>
-            <motion.div
-              animate={{ scale: [1, 1.2, 1], rotate: [0, 5, -5, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <Zap className="w-4 h-4" />
-            </motion.div>
+            <Zap className="w-4 h-4" />
           </motion.div>
+
           <motion.h1
             variants={itemVariants}
             className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent mb-4 drop-shadow-sm"
@@ -292,35 +238,29 @@ const SkillsSection = () => {
           </motion.p>
         </motion.div>
 
+        {/* Tabs */}
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={sectionInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-          transition={{ delay: 0.2, duration: 0.8 }}
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
           className="flex justify-center mb-12"
         >
           <div className="flex flex-wrap justify-center gap-2 p-2 bg-gray-900/50 backdrop-blur-lg rounded-2xl shadow-2xl border border-gray-700/50">
             {skillsData.map((item, index) => (
               <motion.button
                 key={index}
-                variants={tabVariants}
-                initial="inactive"
-                animate={activeTab === index ? "active" : "inactive"}
-                whileHover="hover"
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setActiveTab(index)}
-                className={`flex items-center space-x-3 px-3 sm:px-4 md:px-6 py-3 md:py-4 rounded-xl font-semibold transition-all duration-300 ${
+                className={`flex items-center space-x-3 px-4 py-3 md:px-6 md:py-4 rounded-xl font-semibold transition-all duration-300 ${
                   activeTab === index
                     ? `bg-gradient-to-r ${item.gradient} text-white shadow-xl`
                     : "text-gray-300"
                 }`}
               >
-                <motion.div
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  {item.icon}
-                </motion.div>
-                <span className="text-[14px] sm:text-sm font-bold tracking-wide">
+                {item.icon}
+                <span className="text-sm font-bold tracking-wide">
                   {item.category}
                 </span>
               </motion.button>
@@ -328,54 +268,33 @@ const SkillsSection = () => {
           </div>
         </motion.div>
 
-        <div
-          ref={skillsRef}
+        {/* Skill Cards */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {skillsData[activeTab].skills.map((skill, skillIndex) => (
-            <SkillCard
-              key={`${activeTab}-${skill.name}`}
-              skill={skill}
-              index={skillIndex}
-              categoryGradient={skillsData[activeTab].gradient}
-            />
+          {skillsData[activeTab].skills.map((skill, idx) => (
+            <SkillCard key={skill.name} skill={skill} index={idx} />
           ))}
-        </div>
+        </motion.div>
 
+        {/* Footer Note */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={sectionInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ delay: 0.4, duration: 0.8 }}
-          className={`text-center ${getDynamicMargin()}`}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="text-center mt-12"
         >
           <div className="inline-flex items-center gap-2 text-gray-400">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={sectionInView ? { width: 32 } : { width: 0 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
-              className="h-0.5 bg-gray-600"
-            />
+            <div className="h-0.5 w-8 bg-gray-600" />
             <span className="text-sm font-medium inline-flex items-center gap-2">
-              <motion.span
-                animate={sectionInView ? { y: [0, -5, 0] } : { y: 0 }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: 0.8,
-                }}
-                className="text-lg"
-              >
-                🚀
-              </motion.span>
-              Always learning, always growing
+              🚀 Always learning, always growing
             </span>
-            <motion.div
-              initial={{ width: 0 }}
-              animate={sectionInView ? { width: 32 } : { width: 0 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
-              className="h-0.5 bg-gray-600"
-            />
+            <div className="h-0.5 w-8 bg-gray-600" />
           </div>
         </motion.div>
       </div>
