@@ -157,21 +157,27 @@ const SkillsSection = () => {
   };
 
   const SkillCard = ({ skill }) => {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.6, ease: "easeOut" }} // all same duration
-        className="relative bg-gray-900/60 backdrop-blur-sm rounded-xl p-6 shadow-xl border border-gray-700/50 transition-transform duration-500 hover:scale-105"
-      >
-        <div className="relative z-10 flex items-center space-x-4">
-          {skill.icon}
-          <h3 className="font-semibold text-white text-lg">{skill.name}</h3>
-        </div>
-      </motion.div>
-    );
-  };
+  return (
+    <motion.div
+      initial={isMobile ? { opacity: 0, scale: 0.9 } : { opacity: 0, y: 20 }}
+      whileInView={isMobile ? { opacity: 1, scale: 1 } : { opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={
+        isMobile
+          ? { duration: 0.25, ease: "easeOut" } // fast and smooth for mobile
+          : { duration: 0.6, ease: "easeOut" }  // original staggered duration for desktop
+      }
+      className="relative bg-gray-900/60 backdrop-blur-sm rounded-xl p-6 shadow-xl border border-gray-700/50 transition-transform duration-500 hover:scale-105"
+      style={{ willChange: "transform, opacity" }}
+    >
+      <div className="relative z-10 flex items-center space-x-4">
+        {skill.icon}
+        <h3 className="font-semibold text-white text-lg">{skill.name}</h3>
+      </div>
+    </motion.div>
+  );
+};
+
 
   return (
     <section className="py-10 relative overflow-hidden" id="skills">
