@@ -22,21 +22,13 @@ import {
   SiGithub,
 } from "react-icons/si";
 import { motion } from "framer-motion";
-import {
-  Globe,
-  Code2,
-  Database,
-  Users,
-  Star,
-  Sparkles,
-  Zap,
-} from "lucide-react";
+import { Globe, Code2, Database, Users, Star, Zap } from "lucide-react";
 
 const SkillsSection = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Detect screen size for mobile animations
+  // Detect screen size
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     handleResize();
@@ -138,112 +130,79 @@ const SkillsSection = () => {
     },
   ];
 
-  // Container variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1, delayChildren: 0.2 },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
+  // Mobile skill animation
+  const mobileVariants = {
+    hidden: { opacity: 0, y: 20, scale: 0.95 },
+    visible: (i = 0) => ({
       opacity: 1,
       y: 0,
-      transition: { duration: 0.7, ease: "easeOut" },
-    },
+      scale: 1,
+      transition: {
+        delay: i * 0.08,
+        duration: 0.4,
+        ease: "easeOut",
+        type: "spring",
+        stiffness: 100,
+        damping: 15,
+      },
+    }),
   };
 
-  const SkillCard = ({ skill }) => {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 10, scale: 0.95 }}
-        whileInView={{ opacity: 1, y: 0, scale: 1 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.25, ease: "easeOut" }} // fast and uniform
-        className="relative bg-gray-900/60 backdrop-blur-sm rounded-xl p-6 shadow-xl border border-gray-700/50 transition-transform duration-500 hover:scale-105"
-        style={{ willChange: "transform, opacity" }}
-      >
-        <div className="relative z-10 flex items-center space-x-4">
-          {skill.icon}
-          <h3 className="font-semibold text-white text-lg">{skill.name}</h3>
-        </div>
-      </motion.div>
-    );
+  // Desktop skill animation
+  const desktopVariants = {
+    hidden: { opacity: 0, y: 20, scale: 0.9 },
+    visible: (i = 0) => ({
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        delay: i * 0.15,
+        duration: 0.6,
+        ease: [0.6, 0.01, 0.2, 0.95],
+        type: "spring",
+        stiffness: 120,
+        damping: 20,
+      },
+    }),
   };
+
+  const SkillCard = ({ skill, index }) => (
+    <motion.div
+      custom={index}
+      variants={isMobile ? mobileVariants : desktopVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.3 }}
+      whileHover={{ scale: 1.05 }}
+      className="flex items-center gap-3 bg-gray-900/60 backdrop-blur-sm rounded-xl p-6 shadow-xl border border-gray-700/50 cursor-pointer transition-all"
+    >
+      {skill.icon}
+      <span className="text-white font-semibold">{skill.name}</span>
+    </motion.div>
+  );
 
   return (
     <section className="py-10 relative overflow-hidden" id="skills">
-      {/* Background decorative elements */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1 }}
-        className="absolute -top-4 -right-4 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl"
-      />
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1, delay: 0.3 }}
-        className="absolute -bottom-4 -left-4 w-72 h-72 bg-purple-500/5 rounded-full blur-3xl"
-      />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Heading */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <motion.div
-            variants={itemVariants}
-            className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-700 text-white px-6 py-3 rounded-full mb-6 shadow-xl"
-          >
-            <Star className="w-5 h-5" />
-            <span className="font-bold text-sm tracking-wide">
-              SKILLS & EXPERTISE
-            </span>
-            <Zap className="w-4 h-4" />
-          </motion.div>
-
-          <motion.h1
-            variants={itemVariants}
-            className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent mb-4 drop-shadow-sm"
-          >
-            Technical Skills
-          </motion.h1>
-          <motion.p
-            variants={itemVariants}
-            className="text-lg text-gray-400 max-w-3xl mx-auto leading-relaxed"
-          >
-            Technologies that power my development journey and bring ideas to
-            life
-          </motion.p>
+        <motion.div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            Skills & Expertise
+          </h2>
+          <p className="text-lg text-gray-400 max-w-3xl mx-auto leading-relaxed">
+            Technologies and skills that power my development journey
+          </p>
         </motion.div>
 
         {/* Tabs */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="flex justify-center mb-12"
-        >
+        <div className="flex justify-center mb-12">
           <div className="flex flex-wrap justify-center gap-2 p-2 bg-gray-900/50 backdrop-blur-lg rounded-2xl shadow-2xl border border-gray-700/50">
-            {skillsData.map((item, index) => (
-              <motion.button
-                key={index}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setActiveTab(index)}
-                className={`flex items-center space-x-3 px-4 py-3 md:px-6 md:py-4 rounded-xl font-semibold transition-all duration-300 ${
-                  activeTab === index
+            {skillsData.map((item, idx) => (
+              <button
+                key={idx}
+                onClick={() => setActiveTab(idx)}
+                className={`flex items-center space-x-2 px-4 py-3 md:px-6 md:py-4 rounded-xl font-semibold transition-all duration-300 ${
+                  activeTab === idx
                     ? `bg-gradient-to-r ${item.gradient} text-white shadow-xl`
                     : "text-gray-300"
                 }`}
@@ -252,33 +211,17 @@ const SkillsSection = () => {
                 <span className="text-sm font-bold tracking-wide">
                   {item.category}
                 </span>
-              </motion.button>
+              </button>
             ))}
           </div>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {skillsData[activeTab].skills.map((skill) => (
-            <SkillCard key={skill.name} skill={skill} />
-          ))}
         </div>
 
-        {/* Footer Note */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-center mt-12"
-        >
-          <div className="inline-flex items-center gap-2 text-gray-400">
-            <div className="h-0.5 w-8 bg-gray-600" />
-            <span className="text-sm font-medium inline-flex items-center gap-2">
-              🚀 Always learning, always growing
-            </span>
-            <div className="h-0.5 w-8 bg-gray-600" />
-          </div>
-        </motion.div>
+        {/* Skills Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {skillsData[activeTab].skills.map((skill, index) => (
+            <SkillCard key={skill.name} skill={skill} index={index} />
+          ))}
+        </div>
       </div>
     </section>
   );
