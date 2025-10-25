@@ -157,19 +157,16 @@ const SkillsSection = () => {
   };
 
   const SkillCard = ({ skill, index }) => {
+    // ✨ Fade-up animation (smooth & simple)
     const cardVariants = {
-      hidden: { opacity: 0, y: 30, scale: 0.95 },
+      hidden: { opacity: 0, y: 40 },
       visible: {
         opacity: 1,
         y: 0,
-        scale: 1,
         transition: {
-          delay: index * 0.1,
+          delay: index * 0.1, // small stagger for smooth sequence
           duration: 0.6,
           ease: "easeOut",
-          type: "spring",
-          stiffness: 120,
-          damping: 20,
         },
       },
     };
@@ -179,7 +176,7 @@ const SkillsSection = () => {
         variants={cardVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }} // ✅ animate only once when visible
+        viewport={{ once: true, amount: 0.2 }} // ✅ triggers once only
         className="relative bg-gray-900/60 backdrop-blur-sm rounded-xl p-6 shadow-xl border border-gray-700/50 transition-transform duration-500 hover:scale-105"
       >
         <div className="relative z-10 flex items-center space-x-4">
