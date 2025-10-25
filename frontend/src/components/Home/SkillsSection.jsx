@@ -157,50 +157,30 @@ const SkillsSection = () => {
   };
 
   const SkillCard = ({ skill, index }) => {
-    // Mobile-specific animation
-    const mobileVariants = {
-      hidden: { opacity: 0, y: 20, scale: 0.95 },
+    const fadeInVariants = {
+      hidden: { opacity: 0, y: 30, scale: 0.95 },
       visible: {
         opacity: 1,
         y: 0,
         scale: 1,
         transition: {
-          delay: index * 0.08,
-          duration: 0.4,
+          delay: index * 0.1,
+          duration: 0.6,
           ease: "easeOut",
           type: "spring",
-          stiffness: 100,
-          damping: 15,
-        },
-      },
-    };
-
-    // Desktop animation
-    const desktopVariants = {
-      hidden: { opacity: 0, scale: 0.9, y: 20 },
-      visible: {
-        opacity: 1,
-        scale: 1,
-        y: 0,
-        transition: {
-          delay: index * 0.15,
-          duration: 0.6,
-          ease: [0.6, 0.01, 0.2, 0.95],
-          type: "spring",
           stiffness: 120,
-          damping: 20,
+          damping: 18,
         },
       },
     };
 
     return (
       <motion.div
-        custom={index}
-        variants={isMobile ? mobileVariants : desktopVariants}
+        variants={fadeInVariants}
         initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        className="relative bg-gray-900/60 backdrop-blur-sm rounded-xl p-6 shadow-xl border border-gray-700/50"
+        whileInView="visible" // ✅ triggers when entering viewport
+        viewport={{ once: true, amount: 0.2 }} // ✅ runs only once, smooth for mobile
+        className="relative bg-gray-900/60 backdrop-blur-sm rounded-xl p-6 shadow-xl border border-gray-700/50 transition-transform duration-500 hover:scale-105"
       >
         <div className="relative z-10 flex items-center space-x-4">
           <motion.div

@@ -98,12 +98,17 @@ export default function AboutSection() {
 
           <div className="relative">
             <p className="text-lg leading-relaxed text-gray-200 transition-all duration-500 hover:text-gray-100">
-              Hi, I'm Rishab Sanju Dakhale! I completed my graduation in 2023-24
-              from Vartak College. During my final year, I discovered my passion
-              for coding and decided to dive deep into web development. I
-              completed a full MERN Stack course, followed by an internship
-              where I built live React and Tailwind projects, redesigned company
-              sites, and optimized SEO pages.
+              Hi, I'm Rishab Sanju Dakhale! I recently completed my graduation
+              in 2023-24 from Vartak College. During my final year, I discovered
+              my passion for coding and decided to dive deep into the world of
+              web development. I started learning through free resources and
+              then completed a comprehensive 6-month MERN Stack development
+              course, followed by a valuable 6-month internship where I gained
+              hands-on experience working on live projects. During my
+              internship, I built 15–20 static pages for client projects using
+              React and Tailwind, redesigned official company websites,
+              contributed to internal app testing, and created SEO-related
+              service pages.
             </p>
 
             <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/5 to-purple-500/5 rounded-lg opacity-0 hover:opacity-100 transition-opacity duration-500 -z-10"></div>
