@@ -159,19 +159,14 @@ const SkillsSection = () => {
   const SkillCard = ({ skill }) => {
     return (
       <motion.div
-        initial={{ opacity: 0, y: 20 }} // smaller Y offset for smoother motion
-        whileInView={{ opacity: 1, y: 0 }} // animate when in viewport
-        viewport={{ once: true, amount: 0.3 }} // animate only once
-        transition={{ duration: 0.6, ease: "easeOut" }} // smooth duration
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.6, ease: "easeOut" }} // all same duration
         className="relative bg-gray-900/60 backdrop-blur-sm rounded-xl p-6 shadow-xl border border-gray-700/50 transition-transform duration-500 hover:scale-105"
       >
         <div className="relative z-10 flex items-center space-x-4">
-          <motion.div
-            animate={{ scale: [1, 1.05, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            {skill.icon}
-          </motion.div>
+          {skill.icon}
           <h3 className="font-semibold text-white text-lg">{skill.name}</h3>
         </div>
       </motion.div>
@@ -261,10 +256,9 @@ const SkillsSection = () => {
           </div>
         </motion.div>
 
-        {/* Skill Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {skillsData[activeTab].skills.map((skill, idx) => (
-            <SkillCard key={skill.name} skill={skill} index={idx} />
+          {skillsData[activeTab].skills.map((skill) => (
+            <SkillCard key={skill.name} skill={skill} />
           ))}
         </div>
 
