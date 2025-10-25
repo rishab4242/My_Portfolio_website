@@ -157,14 +157,15 @@ const SkillsSection = () => {
   };
 
   const SkillCard = ({ skill, index }) => {
-    // ✨ Fade-up animation (smooth & simple)
+    const [hasAnimated, setHasAnimated] = React.useState(false);
+
     const cardVariants = {
       hidden: { opacity: 0, y: 40 },
       visible: {
         opacity: 1,
         y: 0,
         transition: {
-          delay: index * 0.1, // small stagger for smooth sequence
+          delay: index * 0.1,
           duration: 0.6,
           ease: "easeOut",
         },
@@ -175,8 +176,10 @@ const SkillsSection = () => {
       <motion.div
         variants={cardVariants}
         initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }} // ✅ triggers once only
+        animate={hasAnimated ? "visible" : undefined}
+        whileInView={!hasAnimated ? "visible" : undefined}
+        onViewportEnter={() => setHasAnimated(true)} // ✅ mark as animated once
+        viewport={{ amount: 0.2 }}
         className="relative bg-gray-900/60 backdrop-blur-sm rounded-xl p-6 shadow-xl border border-gray-700/50 transition-transform duration-500 hover:scale-105"
       >
         <div className="relative z-10 flex items-center space-x-4">
