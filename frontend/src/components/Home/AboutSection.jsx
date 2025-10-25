@@ -1,8 +1,9 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useEffect } from "react";
+import { motion, useAnimation } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 
 export default function AboutSection() {
-  // Variants for smooth animations
+  // Text & heading animations
   const fadeInUp = {
     hidden: { opacity: 0, y: 40 },
     visible: {
@@ -30,12 +31,33 @@ export default function AboutSection() {
     },
   };
 
+  // Image controls
+  const controls = useAnimation();
+  const [ref, inView] = useInView({ threshold: 0.3, triggerOnce: true });
+
+  useEffect(() => {
+    if (inView) controls.start("visible");
+  }, [controls, inView]);
+
+  // 🔹 Image fade-left animation (smooth)
+  const imageVariant = {
+    hidden: { opacity: 0, x: -60 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        duration: 1,
+        ease: [0.25, 0.1, 0.25, 1],
+      },
+    },
+  };
+
   return (
     <div
       className="bg-black text-white py-10 overflow-hidden relative"
       id="about"
     >
-      {/* Main Heading */}
+      {/* Heading */}
       <div className="text-center py-10">
         <motion.h2
           variants={fadeInUp}
@@ -56,26 +78,26 @@ export default function AboutSection() {
         />
       </div>
 
-      {/* Section 1 */}
+      {/* Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 md:gap-20 gap-15 items-center px-4 md:px-16 py-5">
-        {/* Left Image */}
+        {/* Left Image (fade-left) */}
         <motion.div
-          variants={fadeInLeft}
+          ref={ref}
+          variants={imageVariant}
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
+          animate={controls}
           className="w-full h-full bg-gray-900 md:w-[550px] rounded-xl shadow-lg relative overflow-hidden group"
         >
           <img
             src="/me1.jpg"
             alt="Section 1"
-            className="w-full h-full object-cover rounded-xl transform transition-all duration-1000 ease-out md:group-hover:scale-105 group-hover:brightness-110"
+            className="w-full h-full object-cover rounded-xl transition-all duration-700 ease-out group-hover:brightness-110"
           />
 
-          {/* Gradient overlay that appears on hover */}
+          {/* Hover overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-xl"></div>
 
-          {/* Decorative border that glows on hover */}
+          {/* Glow border */}
           <div className="absolute inset-0 rounded-xl border-2 border-transparent group-hover:border-[#e1a87a]/50 group-hover:shadow-lg group-hover:shadow-[#e1a87a]/20 transition-all duration-700"></div>
         </motion.div>
 
@@ -124,10 +146,8 @@ export default function AboutSection() {
               href="#projects"
               className="relative inline-block px-8 py-4 border-2 border-[#e1a87a] text-white rounded-md bg-transparent overflow-hidden transition-all duration-300 hover:text-black hover:scale-105 hover:shadow-lg hover:shadow-[#e1a87a]/25 group"
             >
-              {/* Background animation */}
               <span className="absolute inset-0 bg-[#e1a87a] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out"></span>
 
-              {/* Button text */}
               <span className="relative z-10 flex items-center gap-2 font-semibold">
                 View My Projects
                 <span className="transform group-hover:translate-x-1 transition-transform duration-300">
@@ -139,7 +159,7 @@ export default function AboutSection() {
         </motion.div>
       </div>
 
-      {/* Background decorative elements */}
+      {/* Background elements */}
       <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-3xl"></div>
       <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-br from-[#e1a87a]/10 to-yellow-500/10 rounded-full blur-3xl"></div>
     </div>
