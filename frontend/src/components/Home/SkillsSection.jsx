@@ -157,7 +157,7 @@ const SkillsSection = () => {
   };
 
   const SkillCard = ({ skill, index }) => {
-    const fadeInVariants = {
+    const cardVariants = {
       hidden: { opacity: 0, y: 30, scale: 0.95 },
       visible: {
         opacity: 1,
@@ -169,17 +169,17 @@ const SkillsSection = () => {
           ease: "easeOut",
           type: "spring",
           stiffness: 120,
-          damping: 18,
+          damping: 20,
         },
       },
     };
 
     return (
       <motion.div
-        variants={fadeInVariants}
+        variants={cardVariants}
         initial="hidden"
-        whileInView="visible" // ✅ triggers when entering viewport
-        viewport={{ once: true, amount: 0.2 }} // ✅ runs only once, smooth for mobile
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }} // ✅ animate only once when visible
         className="relative bg-gray-900/60 backdrop-blur-sm rounded-xl p-6 shadow-xl border border-gray-700/50 transition-transform duration-500 hover:scale-105"
       >
         <div className="relative z-10 flex items-center space-x-4">
