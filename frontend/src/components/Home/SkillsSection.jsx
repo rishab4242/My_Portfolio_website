@@ -159,13 +159,13 @@ const SkillsSection = () => {
   const SkillCard = ({ skill }) => {
     return (
       <motion.div
-        initial={isMobile ? { opacity: 0, scale: 0.95 } : { opacity: 0, y: 20 }}
+        initial={isMobile ? { opacity: 0, scale: 0.9 } : { opacity: 0, y: 20 }}
         whileInView={isMobile ? { opacity: 1, scale: 1 } : { opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.3 }}
         transition={
           isMobile
-            ? { duration: 0.15, ease: "easeOut" } // super fast and smooth on mobile
-            : { duration: 0.6, ease: "easeOut" } // keep original desktop animation
+            ? { duration: 0.3, ease: "easeOut" }
+            : { duration: 0.6, ease: "easeOut" }
         }
         className="relative bg-gray-900/60 backdrop-blur-sm rounded-xl p-6 shadow-xl border border-gray-700/50 transition-transform duration-500 hover:scale-105"
         style={{ willChange: "transform, opacity" }}
